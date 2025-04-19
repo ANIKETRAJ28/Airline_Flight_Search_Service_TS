@@ -6,6 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
+    "initialize:db": "node dist/config/db.config.js",
     "start": "npm run build && node dist/index.js",
     "migrate": "node-pg-migrate"
   },
@@ -19,7 +20,8 @@
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
-    "pg": "^8.14.1"
+    "pg": "^8.14.1",
+    "pgtools": "^1.0.1"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
