@@ -1,9 +1,9 @@
-import express from "express";
-import cookieParser from "cookie-parser";
-import cors from "cors";
+import express from 'express';
+import cookieParser from 'cookie-parser';
+import cors from 'cors';
 
-import { PORT } from "./config/env.config";
-import { corsOptions } from "./util/cors.util";
+import { PORT } from './config/env.config';
+import { corsOptions } from './util/cors.util';
 
 const app = express();
 

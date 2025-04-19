@@ -1,6 +1,6 @@
-import pgtools from "pgtools";
+import pgtools from 'pgtools';
 
-import { DB_HOST, DB_PASSWORD, DB_PORT, DB_USER, DB_NAME } from "./env.config";
+import { DB_HOST, DB_PASSWORD, DB_PORT, DB_USER, DB_NAME } from './env.config';
 
 const config = {
   user: DB_USER,
@@ -17,7 +17,7 @@ pgtools
     console.log(`Database ${db_name} created successfully`);
   })
   .catch((error) => {
-    if (error.name === "duplicate_database") {
+    if (error.name === 'duplicate_database') {
       console.log(`Database ${db_name} already exists`);
     } else {
       console.error(`Error creating database ${db_name}:`, error);

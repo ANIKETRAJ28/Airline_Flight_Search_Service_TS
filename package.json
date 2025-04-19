@@ -10,7 +10,8 @@
     "start": "npm run build && node dist/index.js",
     "migrate": "node-pg-migrate",
     "format": "npx prettier --write .",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "prepare": "husky install"
   },
   "author": "",
   "license": "ISC",
@@ -34,8 +35,10 @@
     "@types/jsonwebtoken": "^9.0.9",
     "eslint": "^9.25.0",
     "globals": "^16.0.0",
+    "husky": "^9.1.7",
     "node-pg-migrate": "^7.9.1",
     "prettier": "^3.5.3",
+    "typescript": "^5.8.3",
     "typescript-eslint": "^8.30.1"
   }
 }
