@@ -20,6 +20,7 @@ export default [
       '@typescript-eslint/no-unused-vars': ['error'], // Prevent unused variables
       // '@typescript-eslint/no-explicit-any': 'warn', // Discourage using `any`
       '@typescript-eslint/explicit-function-return-type': ['warn', { allowExpressions: true }],
+      'no-undef': 'off',
     },
   },
 ];
