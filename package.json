@@ -8,7 +8,9 @@
     "build": "tsc",
     "initialize:db": "node dist/config/db.config.js",
     "start": "npm run build && node dist/index.js",
-    "migrate": "node-pg-migrate"
+    "migrate": "node-pg-migrate",
+    "format": "npx prettier --write .",
+    "lint": "eslint ."
   },
   "author": "",
   "license": "ISC",
@@ -24,11 +26,16 @@
     "pgtools": "^1.0.1"
   },
   "devDependencies": {
+    "@eslint/js": "^9.25.0",
     "@types/bcrypt": "^5.0.2",
     "@types/cookie-parser": "^1.4.8",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.1",
     "@types/jsonwebtoken": "^9.0.9",
-    "node-pg-migrate": "^7.9.1"
+    "eslint": "^9.25.0",
+    "globals": "^16.0.0",
+    "node-pg-migrate": "^7.9.1",
+    "prettier": "^3.5.3",
+    "typescript-eslint": "^8.30.1"
   }
 }
