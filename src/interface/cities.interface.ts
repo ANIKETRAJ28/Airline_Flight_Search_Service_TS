@@ -10,7 +10,7 @@ export interface ICity extends ICityRequest {
   created_at: Date;
   updated_at: Date;
 }
-export interface ICityWithCountry {
+export interface ICityWithCountry extends Omit<ICityRequest, 'country_id'> {
   id: string;
   name: string;
   country: ICountry;

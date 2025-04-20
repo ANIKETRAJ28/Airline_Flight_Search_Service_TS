@@ -1,9 +1,24 @@
-export interface IAirport {
-  id: string;
+import { ICity } from './cities.interface';
+import { ICountry } from './countries.interface';
+
+export interface IAirportRequest {
   name: string;
   code: string;
   city_id: string;
   country_id: string;
+}
+
+export interface IAirport extends IAirportRequest {
+  id: string;
+  created_at: Date;
+  updated_at: Date;
+}
+export interface IAirportWithCityAndCountry extends Omit<IAirportRequest, 'city_id' | 'country_id'> {
+  id: string;
+  name: string;
+  code: string;
+  city: ICity;
+  country: ICountry;
   created_at: Date;
   updated_at: Date;
 }
