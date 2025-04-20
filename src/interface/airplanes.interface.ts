@@ -1,9 +1,11 @@
-export interface IAirplane {
-  id: string;
+export interface IAirplaneRequest {
   name: string;
   code: string;
   capacity: number;
-  airline_id: string;
+}
+
+export interface IAirplane extends IAirplaneRequest {
+  id: string;
   created_at: Date;
   updated_at: Date;
 }
