@@ -20,6 +20,7 @@ exports.up = (pgm) => {
       arrival_time TIMESTAMP NOT NULL,
       status flight_status NOT NULL DEFAULT 'SCHEDULED',
       price DECIMAL(10, 2) NOT NULL,
+      booked_seats INT NOT NULL DEFAULT 0,
       created_at TIMESTAMP DEFAULT NOW(),
       updated_at TIMESTAMP DEFAULT NOW()
     )
