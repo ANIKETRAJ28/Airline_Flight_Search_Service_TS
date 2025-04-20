@@ -9,6 +9,7 @@
     "initialize:db": "node dist/config/db.config.js",
     "start": "npm run build && node dist/index.js",
     "migrate": "node-pg-migrate",
+    "seed": "node seeds/seeds.ts",
     "format": "npx prettier --write .",
     "lint": "eslint .",
     "prepare": "husky install"
@@ -33,6 +34,7 @@
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.1",
     "@types/jsonwebtoken": "^9.0.9",
+    "@types/pg": "^8.11.13",
     "eslint": "^9.25.0",
     "globals": "^16.0.0",
     "husky": "^9.1.7",
