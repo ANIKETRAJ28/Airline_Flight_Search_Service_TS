@@ -10,15 +10,17 @@ exports.shorthands = undefined;
  */
 exports.up = (pgm) => {
   // create status enums
-  pgm.createType('flight_status', [
-    'SCHEDULED',
-    'BOARDING',
-    'IN_FLIGHT',
-    'LANDED',
-    'COMPLETED',
-    'DELAYED',
-    'CANCELLED',
-  ]);
+  pgm.sql(`
+    CREATE TYPE flight_status AS ENUM (
+      'SCHEDULED',
+      'BOARDING',
+      'IN_FLIGHT',
+      'LANDED',
+      'COMPLETED',
+      'DELAYED',
+      'CANCELLED'
+    )
+  `);
 };
 
 /**

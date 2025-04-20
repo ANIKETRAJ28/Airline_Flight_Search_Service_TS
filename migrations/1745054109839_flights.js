@@ -12,7 +12,7 @@ exports.up = (pgm) => {
   pgm.sql(`
     CREATE TABLE flights (
       id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-      flight_number VARCHAR(10) NOT NULL UNIQUE,
+      flight_number VARCHAR(20) NOT NULL UNIQUE DEFAULT 'FLIGHT_' || substring(gen_random_uuid()::text from 1 for 8),
       airplane_id UUID NOT NULL,
       departure_airport_id UUID NOT NULL,
       arrival_airport_id UUID NOT NULL,
@@ -24,7 +24,7 @@ exports.up = (pgm) => {
       updated_at TIMESTAMP DEFAULT NOW()
     )
   `);
-  // add foreign key constraints
+  // add foreign key constraints to airplanes table
   pgm.sql(`
     ALTER TABLE flights
     ADD CONSTRAINT fk_airplane
@@ -33,6 +33,7 @@ exports.up = (pgm) => {
     ON DELETE RESTRICT
     ON UPDATE CASCADE
   `);
+  // add foreign key constraints to airports table
   pgm.sql(`
     ALTER TABLE flights
     ADD CONSTRAINT fk_departure_airport
@@ -41,6 +42,7 @@ exports.up = (pgm) => {
     ON DELETE RESTRICT
     ON UPDATE CASCADE
   `);
+  // add foreign key constraints to airports table
   pgm.sql(`
     ALTER TABLE flights
     ADD CONSTRAINT fk_arrival_airport
@@ -57,15 +59,17 @@ exports.up = (pgm) => {
  * @returns {Promise<void> | void}
  */
 exports.down = (pgm) => {
-  // drop foreign key constraints
+  // drop foreign key constraints to airplanes table
   pgm.sql(`
     ALTER TABLE flights
     DROP CONSTRAINT fk_airplane
   `);
+  // drop foreign key constraints to airports table
   pgm.sql(`
     ALTER TABLE flights
     DROP CONSTRAINT fk_departure_airport
   `);
+  // drop foreign key constraints to airports table
   pgm.sql(`
     ALTER TABLE flights
     DROP CONSTRAINT fk_arrival_airport

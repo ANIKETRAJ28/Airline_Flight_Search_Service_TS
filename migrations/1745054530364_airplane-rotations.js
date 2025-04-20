@@ -23,7 +23,7 @@ exports.up = (pgm) => {
       updated_at TIMESTAMP DEFAULT NOW()
     )
   `);
-  // add foreign key constraints
+  // add foreign key constraints to airplanes table
   pgm.sql(`
     ALTER TABLE airplane_rotations
     ADD CONSTRAINT fk_airplane
@@ -32,6 +32,7 @@ exports.up = (pgm) => {
     ON DELETE RESTRICT
     ON UPDATE CASCADE
   `);
+  // add foreign key constraints to airports table
   pgm.sql(`
     ALTER TABLE airplane_rotations
     ADD CONSTRAINT fk_from_airport
@@ -40,6 +41,7 @@ exports.up = (pgm) => {
     ON DELETE RESTRICT
     ON UPDATE CASCADE
   `);
+  // add foreign key constraints to airports table
   pgm.sql(`
     ALTER TABLE airplane_rotations
     ADD CONSTRAINT fk_to_airport
@@ -56,15 +58,17 @@ exports.up = (pgm) => {
  * @returns {Promise<void> | void}
  */
 exports.down = (pgm) => {
-  // drop foreign key constraints
+  // drop foreign key constraints to airplanes table
   pgm.sql(`
     ALTER TABLE airplane_rotations
     DROP CONSTRAINT fk_airplane
   `);
+  // drop foreign key constraints to airports table
   pgm.sql(`
     ALTER TABLE airplane_rotations
     DROP CONSTRAINT fk_from_airport
   `);
+  // drop foreign key constraints to airports table
   pgm.sql(`
     ALTER TABLE airplane_rotations
     DROP CONSTRAINT fk_to_airport
