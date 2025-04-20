@@ -1,13 +1,7 @@
 import pgtools from 'pgtools';
 
-import { DB_HOST, DB_PASSWORD, DB_PORT, DB_USER, DB_NAME } from './env.config';
-
-const config = {
-  user: DB_USER,
-  password: DB_PASSWORD,
-  host: DB_HOST,
-  port: DB_PORT,
-};
+import { DB_NAME } from './env.config';
+import { config } from '../util/db.utils';
 
 const db_name = DB_NAME as string;
 
