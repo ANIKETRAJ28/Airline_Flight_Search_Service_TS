@@ -1,7 +1,6 @@
 import { IFlightStatus } from '../types/flightStatus.types';
 
-export interface IFlight {
-  id: string;
+export interface IFlightRequest {
   flight_number: string;
   airplane_id: string;
   departure_city_id: string;
@@ -11,6 +10,10 @@ export interface IFlight {
   status: IFlightStatus;
   price: number;
   booked_seats: number;
+}
+
+export interface IFlight extends IFlightRequest {
+  id: string;
   created_at: Date;
   updated_at: Date;
 }
