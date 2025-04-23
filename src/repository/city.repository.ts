@@ -1,35 +1,18 @@
-import { Client } from 'pg';
+import { PoolClient } from 'pg';
 
-import { ICity, ICityRequest, ICityWithCountry } from '../interface/cities.interface';
-import { config } from '../util/db.utils';
+import { ICityRequest, ICityWithCountry } from '../interface/cities.interface';
+import { getPool } from '../util/dbPool.util';
 
 export class CityRepository {
-  private client: Client;
+  private pool = getPool();
 
-  constructor() {
-    this.client = new Client(config);
-  }
+  constructor() {}
 
-  async getAllCities(): Promise<ICity[]> {
+  async getAllCities(): Promise<ICityWithCountry[]> {
+    const client: PoolClient = await this.pool.connect();
     try {
-      const query = 'SELECT * FROM cities';
-      await this.client.connect();
-      const result = await this.client.query(query);
-      await this.client.end();
-      const cities: ICity[] = result.rows;
-      return cities;
-    } catch (error) {
-      console.log('Error in CityRepo: getAllCities:', error);
-      throw error;
-    }
-  }
-
-  async getAllCitiesWithCountry(): Promise<ICityWithCountry[]> {
-    try {
-      const query = 'SELECT * FROM cities c INNER JOIN countries co ON c.country_id = co.id';
-      await this.client.connect();
-      const result = await this.client.query(query);
-      await this.client.end();
+      const query = `SELECT c.*, co.name AS country_name, co.code AS country_code, co.created_at AS country_created_at, co.updated_at AS country_updated_at FROM cities c INNER JOIN countries co ON c.country_id = co.id`;
+      const result = await client.query(query);
       const cities: ICityWithCountry[] = result.rows.map((row) => ({
         id: row.id,
         name: row.name,
@@ -47,54 +30,111 @@ export class CityRepository {
     } catch (error) {
       console.log('Error in CityRepo: getAllCitiesWithCountry:', error);
       throw error;
+    } finally {
+      await client.release();
     }
   }
 
-  async getCityById(id: string): Promise<ICity> {
+  async getCityById(id: string): Promise<ICityWithCountry> {
+    const client: PoolClient = await this.pool.connect();
     try {
-      const query = 'SELECT * FROM cities WHERE id = $1';
-      await this.client.connect();
-      const result = await this.client.query(query, [id]);
-      await this.client.end();
-      const city: ICity | null = result.rows[0];
+      const query = `SELECT c.*, co.name AS country_name, co.code AS country_code, co.created_at AS country_created_at, co.updated_at AS country_updated_at FROM cities c INNER JOIN countries co ON c.country_id = co.id WHERE c.id = $1`;
+      const result = await client.query(query, [id]);
+      const city = result.rows[0];
       if (city === null) {
         throw new Error(`City with id ${id} not found`);
       }
-      return city;
+      const cityResponse: ICityWithCountry = {
+        id: city.id,
+        name: city.name,
+        country: {
+          id: city.country_id,
+          code: city.country_code,
+          name: city.country_name,
+          created_at: city.country_created_at,
+          updated_at: city.country_updated_at,
+        },
+        created_at: city.created_at,
+        updated_at: city.updated_at,
+      };
+      return cityResponse;
     } catch (error) {
       console.log('Error in CityRepo: getCityById:', error);
       throw error;
+    } finally {
+      await client.release();
     }
   }
 
-  async getCityWithCountryById(id: string): Promise<ICityWithCountry> {
+  async getCityByName(name: string): Promise<ICityWithCountry> {
+    const client: PoolClient = await this.pool.connect();
     try {
-      const query = 'SELECT * FROM cities c INNER JOIN countries co ON c.country_id = co.id WHERE c.id = $1';
-      await this.client.connect();
-      const result = await this.client.query(query, [id]);
-      await this.client.end();
-      const city: ICityWithCountry | null = result.rows[0];
+      const query = `SELECT c.*, co.name AS country_name, co.code AS country_code, co.created_at AS country_created_at, co.updated_at AS country_updated_at FROM cities c INNER JOIN countries co ON c.country_id = co.id WHERE c.name = $1`;
+      const result = await client.query(query, [name]);
+      const city = result.rows[0];
       if (city === null) {
-        throw new Error(`City with id ${id} not found`);
+        throw new Error(`City with id ${name} not found`);
       }
-      return city;
+      const cityResponse: ICityWithCountry = {
+        id: city.id,
+        name: city.name,
+        country: {
+          id: city.country_id,
+          code: city.country_code,
+          name: city.country_name,
+          created_at: city.country_created_at,
+          updated_at: city.country_updated_at,
+        },
+        created_at: city.created_at,
+        updated_at: city.updated_at,
+      };
+      return cityResponse;
     } catch (error) {
-      console.log('Error in CityRepo: getCityWithCountryById:', error);
+      console.log('Error in CityRepo: getCityByNameWithCountry:', error);
       throw error;
+    } finally {
+      await client.release();
     }
   }
 
-  async createCity(city: ICityRequest): Promise<ICity> {
+  async createCity(city: ICityRequest): Promise<ICityWithCountry> {
+    const client: PoolClient = await this.pool.connect();
     try {
-      const query = `INSERT INTO cities (name, country_id) VALUES ($1, $2) RETURNING *`;
-      await this.client.connect();
-      const result = await this.client.query(query, [city.name, city.country_id]);
-      await this.client.end();
-      const newCity: ICity = result.rows[0];
-      return newCity;
+      const query = `INSERT INTO cities (name, country_id) VALUES ($1, $2)`;
+      await client.query(query, [city.name, city.country_id]);
+      return this.getCityByName(city.name);
     } catch (error) {
       console.log('Error in CityRepo: createCity:', error);
       throw error;
+    } finally {
+      await client.release();
+    }
+  }
+
+  async updateCityName(id: string, name: string): Promise<ICityWithCountry> {
+    const client: PoolClient = await this.pool.connect();
+    try {
+      const query = 'UPDATE cities SET name = $1 WHERE id = $2';
+      await client.query(query, [name, id]);
+      return this.getCityById(id);
+    } catch (error) {
+      console.log('Error in CityRepo: updateCityName:', error);
+      throw error;
+    } finally {
+      await client.release();
+    }
+  }
+
+  async deleteCity(id: string): Promise<void> {
+    const client: PoolClient = await this.pool.connect();
+    try {
+      const query = 'DELETE FROM cities WHERE id = $1';
+      await client.query(query, [id]);
+    } catch (error) {
+      console.log('Error in CityRepo: deleteCity:', error);
+      throw error;
+    } finally {
+      await client.release();
     }
   }
 }
