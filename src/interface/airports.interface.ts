@@ -5,7 +5,6 @@ export interface IAirportRequest {
   name: string;
   code: string;
   city_id: string;
-  country_id: string;
 }
 
 export interface IAirport extends IAirportRequest {
@@ -13,7 +12,7 @@ export interface IAirport extends IAirportRequest {
   created_at: Date;
   updated_at: Date;
 }
-export interface IAirportWithCityAndCountry extends Omit<IAirportRequest, 'city_id' | 'country_id'> {
+export interface IAirportWithCityAndCountry extends Omit<IAirportRequest, 'city_id'> {
   id: string;
   name: string;
   code: string;
