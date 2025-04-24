@@ -16,7 +16,6 @@ exports.up = (pgm) => {
       name VARCHAR(255) NOT NULL UNIQUE,
       code VARCHAR(10) NOT NULL UNIQUE,
       city_id UUID NOT NULL,
-      country_id UUID NOT NULL,
       created_at TIMESTAMP DEFAULT NOW(),
       updated_at TIMESTAMP DEFAULT NOW()
     )
@@ -27,15 +26,6 @@ exports.up = (pgm) => {
     ADD CONSTRAINT fk_city
     FOREIGN KEY (city_id)
     REFERENCES cities(id)
-    ON DELETE RESTRICT
-    ON UPDATE CASCADE
-  `);
-  // add foreign key constraint to countries table
-  pgm.sql(`
-    ALTER TABLE airports
-    ADD CONSTRAINT fk_country
-    FOREIGN KEY (country_id)
-    REFERENCES countries(id)
     ON DELETE RESTRICT
     ON UPDATE CASCADE
   `);
