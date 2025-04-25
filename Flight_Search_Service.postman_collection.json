@@ -1,1151 +1,957 @@
 {
-	"info": {
-		"_postman_id": "6a14f20f-4899-4ac1-8c73-4244ae048e82",
-		"name": "Flight_Search_Service",
-		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
-		"_exporter_id": "32083388"
-	},
-	"item": [
-		{
-			"name": "Countries",
-			"item": [
-				{
-					"name": "Get Countries",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": "{{server}}/countries"
-					},
-					"response": []
-				},
-				{
-					"name": "Get Country By Id",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{server}}/countries/:id",
-							"host": [
-								"{{server}}"
-							],
-							"path": [
-								"countries",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "40d0639f-39ef-4c01-bf1e-0ceb29e1222d"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Update Country Name By Id",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"INDIA\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{server}}/countries/name/:id",
-							"host": [
-								"{{server}}"
-							],
-							"path": [
-								"countries",
-								"name",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "40d0639f-39ef-4c01-bf1e-0ceb29e1222d"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Update Country Code By Id",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"code\": \"IND\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{server}}/countries/code/:id",
-							"host": [
-								"{{server}}"
-							],
-							"path": [
-								"countries",
-								"code",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "40d0639f-39ef-4c01-bf1e-0ceb29e1222d"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Country By Name",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{server}}/countries/name/:name",
-							"host": [
-								"{{server}}"
-							],
-							"path": [
-								"countries",
-								"name",
-								":name"
-							],
-							"variable": [
-								{
-									"key": "name",
-									"value": "INDIA"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Country By Code",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{server}}/countries/code/:code",
-							"host": [
-								"{{server}}"
-							],
-							"path": [
-								"countries",
-								"code",
-								":code"
-							],
-							"variable": [
-								{
-									"key": "code",
-									"value": "IN"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Create Country",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"PAKISTAN\",\r\n    \"code\": \"PAK\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": "{{server}}/countries"
-					},
-					"response": []
-				},
-				{
-					"name": "Delete Country",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"India\",\r\n    \"code\": \"IN\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{server}}/countries/:id",
-							"host": [
-								"{{server}}"
-							],
-							"path": [
-								"countries",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "6c4b6185-8511-424e-903f-ae4ea6daa045"
-								}
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Cities",
-			"item": [
-				{
-					"name": "Get All Cities",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": "{{server}}/cities"
-					},
-					"response": []
-				},
-				{
-					"name": "Get City By Id",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{server}}/cities/:id",
-							"host": [
-								"{{server}}"
-							],
-							"path": [
-								"cities",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "701eb299-8846-4477-8031-15ec0e7a3735"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Create City",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"Bengaluru\",\r\n    \"country_id\": \"40d0639f-39ef-4c01-bf1e-0ceb29e1222d\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": "{{server}}/cities"
-					},
-					"response": []
-				},
-				{
-					"name": "Get City By Name",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{server}}/cities/name/:name",
-							"host": [
-								"{{server}}"
-							],
-							"path": [
-								"cities",
-								"name",
-								":name"
-							],
-							"variable": [
-								{
-									"key": "name",
-									"value": "Lahore"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Update City Name",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"Delhi\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{server}}/cities/:id",
-							"host": [
-								"{{server}}"
-							],
-							"path": [
-								"cities",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "701eb299-8846-4477-8031-15ec0e7a3735"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete City",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{server}}/cities/:id",
-							"host": [
-								"{{server}}"
-							],
-							"path": [
-								"cities",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "b54de30e-b796-49a5-b39f-97247b59a088"
-								}
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Airplane",
-			"item": [
-				{
-					"name": "Get All Airplanes",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": "{{server}}/airplanes"
-					},
-					"response": []
-				},
-				{
-					"name": "Get Airplane By Id",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{server}}/airplanes/:id",
-							"host": [
-								"{{server}}"
-							],
-							"path": [
-								"airplanes",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "2f78ff0d-5fbd-4b48-a26d-ffc3ddc33d0a"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Airplane By Name",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{server}}/airplanes/name/:name",
-							"host": [
-								"{{server}}"
-							],
-							"path": [
-								"airplanes",
-								"name",
-								":name"
-							],
-							"variable": [
-								{
-									"key": "name",
-									"value": "Boeing 737-800"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Airplane By Code",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{server}}/airplanes/code/:code",
-							"host": [
-								"{{server}}"
-							],
-							"path": [
-								"airplanes",
-								"code",
-								":code"
-							],
-							"variable": [
-								{
-									"key": "code",
-									"value": "B738"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Create Airplane",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"Boeing 737-800\",\r\n    \"code\": \"B738\",\r\n    \"capacity\": 189\r\n  }",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": "{{server}}/airplanes"
-					},
-					"response": []
-				},
-				{
-					"name": "Update Airplane Name",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"Boeing 740-800\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{server}}/airplanes/name/:id",
-							"host": [
-								"{{server}}"
-							],
-							"path": [
-								"airplanes",
-								"name",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "1d3c75cd-170c-4588-95a5-b03fa19a75e1"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Update Airplane Code",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"code\": \"B740\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{server}}/airplanes/code/:id",
-							"host": [
-								"{{server}}"
-							],
-							"path": [
-								"airplanes",
-								"code",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "1d3c75cd-170c-4588-95a5-b03fa19a75e1"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Update Airplane Capacity",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"capacity\": \"200\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{server}}/airplanes/capacity/:id",
-							"host": [
-								"{{server}}"
-							],
-							"path": [
-								"airplanes",
-								"capacity",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "1d3c75cd-170c-4588-95a5-b03fa19a75e1"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete Airplane",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{server}}/airplanes/:id",
-							"host": [
-								"{{server}}"
-							],
-							"path": [
-								"airplanes",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "1d3c75cd-170c-4588-95a5-b03fa19a75e1"
-								}
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Airport",
-			"item": [
-				{
-					"name": "Create Airport",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"Kempegowda International Airport\",\r\n    \"code\": \"BLR\",\r\n    \"city_id\": \"07332df6-fb5b-439b-8e85-68058849104c\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": "{{server}}/airports"
-					},
-					"response": []
-				},
-				{
-					"name": "Get All Airports",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": "{{server}}/airports"
-					},
-					"response": []
-				},
-				{
-					"name": "Get Airport By Id",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{server}}/airports/id/:id",
-							"host": [
-								"{{server}}"
-							],
-							"path": [
-								"airports",
-								"id",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "40b1b47f-bdd7-4e53-8f72-67cea100ac59"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Airport By Code",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{server}}/airports/code/:code",
-							"host": [
-								"{{server}}"
-							],
-							"path": [
-								"airports",
-								"code",
-								":code"
-							],
-							"variable": [
-								{
-									"key": "code",
-									"value": "BOM"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Airports Of City Name",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{server}}/airports/city/name/:name",
-							"host": [
-								"{{server}}"
-							],
-							"path": [
-								"airports",
-								"city",
-								"name",
-								":name"
-							],
-							"variable": [
-								{
-									"key": "name",
-									"value": "Delhi"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Airports Of City Name Id",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{server}}/airports/city/id/:id",
-							"host": [
-								"{{server}}"
-							],
-							"path": [
-								"airports",
-								"city",
-								"id",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "701eb299-8846-4477-8031-15ec0e7a3735"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Update Airport Name",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"Indira Gandhi International Airport\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{server}}/airports/name/:id",
-							"host": [
-								"{{server}}"
-							],
-							"path": [
-								"airports",
-								"name",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "32ebbc85-b975-402f-99db-dba7280c6041"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Update Airport Code",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"code\": \"DLE\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{server}}/airports/code/:id",
-							"host": [
-								"{{server}}"
-							],
-							"path": [
-								"airports",
-								"code",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "32ebbc85-b975-402f-99db-dba7280c6041"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete Airport By Id",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{server}}/airports/:id",
-							"host": [
-								"{{server}}"
-							],
-							"path": [
-								"airports",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "a6d6db01-7431-4179-be83-1e9ccadac211"
-								}
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Flight",
-			"item": [
-				{
-					"name": "Create Flight",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"airplane_id\": \"014a2b11-9e6b-462b-82c0-d1aa52a41e8f\",\r\n    \"departure_airport_id\": \"32ebbc85-b975-402f-99db-dba7280c6041\",\r\n    \"arrival_airport_id\": \"b7487d72-0752-408c-84ea-e48bcf0c2b3e\",\r\n    \"departure_time\": \"2025-04-24T15:30:00\",\r\n    \"arrival_time\": \"2025-04-24T18:00:00\",\r\n    \"status\": \"SCHEDULED\",\r\n    \"price\": \"7000\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": "{{server}}/flight"
-					},
-					"response": []
-				},
-				{
-					"name": "Get all Flights",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": "{{server}}/flight"
-					},
-					"response": []
-				},
-				{
-					"name": "Get Flight by flight number",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{server}}/flight/flight_number/:flight_number",
-							"host": [
-								"{{server}}"
-							],
-							"path": [
-								"flight",
-								"flight_number",
-								":flight_number"
-							],
-							"variable": [
-								{
-									"key": "flight_number",
-									"value": "FLIGHT_ff01c2a4"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Flight with Detail By Flight Id",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{server}}/flight/:id",
-							"host": [
-								"{{server}}"
-							],
-							"path": [
-								"flight",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "b289da30-898f-417a-9cb6-3e840ee8b7e3"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Update Flight arrival time",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"arrival_time\": \"2025-04-24T13:30:00\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{server}}/flight/:id/arrival_time",
-							"host": [
-								"{{server}}"
-							],
-							"path": [
-								"flight",
-								":id",
-								"arrival_time"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "b289da30-898f-417a-9cb6-3e840ee8b7e3"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Update Flight departure time",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"departure_time\": \"2025-04-24T10:30:00\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{server}}/flight/:id/departure_time",
-							"host": [
-								"{{server}}"
-							],
-							"path": [
-								"flight",
-								":id",
-								"departure_time"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "b289da30-898f-417a-9cb6-3e840ee8b7e3"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Update Flight price",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"price\": 9500.80\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{server}}/flight/:id/price",
-							"host": [
-								"{{server}}"
-							],
-							"path": [
-								"flight",
-								":id",
-								"price"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "b289da30-898f-417a-9cb6-3e840ee8b7e3"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Update Flight status",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"status\": \"BOARDING\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{server}}/flight/:id/status",
-							"host": [
-								"{{server}}"
-							],
-							"path": [
-								"flight",
-								":id",
-								"status"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "b289da30-898f-417a-9cb6-3e840ee8b7e3"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Update Flight arrival airport id",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"arrival_airport_id\": \"32ebbc85-b975-402f-99db-dba7280c6041\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{server}}/flight/:id/arrival_airport",
-							"host": [
-								"{{server}}"
-							],
-							"path": [
-								"flight",
-								":id",
-								"arrival_airport"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "b289da30-898f-417a-9cb6-3e840ee8b7e3"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Update Flight departure airport id",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"departure_airport_id\": \"b7487d72-0752-408c-84ea-e48bcf0c2b3e\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{server}}/flight/:id/departure_airport",
-							"host": [
-								"{{server}}"
-							],
-							"path": [
-								"flight",
-								":id",
-								"departure_airport"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "b289da30-898f-417a-9cb6-3e840ee8b7e3"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete Flight",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{server}}/flight/:id",
-							"host": [
-								"{{server}}"
-							],
-							"path": [
-								"flight",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": ""
-								}
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		}
-	],
-	"event": [
-		{
-			"listen": "prerequest",
-			"script": {
-				"type": "text/javascript",
-				"packages": {},
-				"exec": [
-					""
-				]
-			}
-		},
-		{
-			"listen": "test",
-			"script": {
-				"type": "text/javascript",
-				"packages": {},
-				"exec": [
-					""
-				]
-			}
-		}
-	],
-	"variable": [
-		{
-			"key": "server",
-			"value": "http://localhost:8080/api/v1/",
-			"type": "string"
-		}
-	]
+  "info": {
+    "_postman_id": "6a14f20f-4899-4ac1-8c73-4244ae048e82",
+    "name": "Flight_Search_Service",
+    "schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+    "_exporter_id": "32083388"
+  },
+  "item": [
+    {
+      "name": "Countries",
+      "item": [
+        {
+          "name": "Get Countries",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{server}}/countries"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Country By Id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{server}}/countries/:id",
+              "host": ["{{server}}"],
+              "path": ["countries", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "40d0639f-39ef-4c01-bf1e-0ceb29e1222d"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Country Name By Id",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"INDIA\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{server}}/countries/name/:id",
+              "host": ["{{server}}"],
+              "path": ["countries", "name", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "40d0639f-39ef-4c01-bf1e-0ceb29e1222d"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Country Code By Id",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"code\": \"IND\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{server}}/countries/code/:id",
+              "host": ["{{server}}"],
+              "path": ["countries", "code", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "40d0639f-39ef-4c01-bf1e-0ceb29e1222d"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Country By Name",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{server}}/countries/name/:name",
+              "host": ["{{server}}"],
+              "path": ["countries", "name", ":name"],
+              "variable": [
+                {
+                  "key": "name",
+                  "value": "INDIA"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Country By Code",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{server}}/countries/code/:code",
+              "host": ["{{server}}"],
+              "path": ["countries", "code", ":code"],
+              "variable": [
+                {
+                  "key": "code",
+                  "value": "IN"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Country",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"PAKISTAN\",\r\n    \"code\": \"PAK\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{server}}/countries"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Country",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"India\",\r\n    \"code\": \"IN\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{server}}/countries/:id",
+              "host": ["{{server}}"],
+              "path": ["countries", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "6c4b6185-8511-424e-903f-ae4ea6daa045"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Cities",
+      "item": [
+        {
+          "name": "Get All Cities",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{server}}/cities"
+          },
+          "response": []
+        },
+        {
+          "name": "Get City By Id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{server}}/cities/:id",
+              "host": ["{{server}}"],
+              "path": ["cities", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "701eb299-8846-4477-8031-15ec0e7a3735"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create City",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Bengaluru\",\r\n    \"country_id\": \"40d0639f-39ef-4c01-bf1e-0ceb29e1222d\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{server}}/cities"
+          },
+          "response": []
+        },
+        {
+          "name": "Get City By Name",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{server}}/cities/name/:name",
+              "host": ["{{server}}"],
+              "path": ["cities", "name", ":name"],
+              "variable": [
+                {
+                  "key": "name",
+                  "value": "Lahore"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update City Name",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Delhi\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{server}}/cities/:id",
+              "host": ["{{server}}"],
+              "path": ["cities", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "701eb299-8846-4477-8031-15ec0e7a3735"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete City",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{server}}/cities/:id",
+              "host": ["{{server}}"],
+              "path": ["cities", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "b54de30e-b796-49a5-b39f-97247b59a088"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Airplane",
+      "item": [
+        {
+          "name": "Get All Airplanes",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{server}}/airplanes"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Airplane By Id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{server}}/airplanes/:id",
+              "host": ["{{server}}"],
+              "path": ["airplanes", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "2f78ff0d-5fbd-4b48-a26d-ffc3ddc33d0a"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Airplane By Name",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{server}}/airplanes/name/:name",
+              "host": ["{{server}}"],
+              "path": ["airplanes", "name", ":name"],
+              "variable": [
+                {
+                  "key": "name",
+                  "value": "Boeing 737-800"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Airplane By Code",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{server}}/airplanes/code/:code",
+              "host": ["{{server}}"],
+              "path": ["airplanes", "code", ":code"],
+              "variable": [
+                {
+                  "key": "code",
+                  "value": "B738"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Airplane",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Boeing 737-800\",\r\n    \"code\": \"B738\",\r\n    \"capacity\": 189\r\n  }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{server}}/airplanes"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Airplane Name",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Boeing 740-800\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{server}}/airplanes/name/:id",
+              "host": ["{{server}}"],
+              "path": ["airplanes", "name", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1d3c75cd-170c-4588-95a5-b03fa19a75e1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Airplane Code",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"code\": \"B740\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{server}}/airplanes/code/:id",
+              "host": ["{{server}}"],
+              "path": ["airplanes", "code", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1d3c75cd-170c-4588-95a5-b03fa19a75e1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Airplane Capacity",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"capacity\": \"200\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{server}}/airplanes/capacity/:id",
+              "host": ["{{server}}"],
+              "path": ["airplanes", "capacity", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1d3c75cd-170c-4588-95a5-b03fa19a75e1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Airplane",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{server}}/airplanes/:id",
+              "host": ["{{server}}"],
+              "path": ["airplanes", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1d3c75cd-170c-4588-95a5-b03fa19a75e1"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Airport",
+      "item": [
+        {
+          "name": "Create Airport",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Kempegowda International Airport\",\r\n    \"code\": \"BLR\",\r\n    \"city_id\": \"07332df6-fb5b-439b-8e85-68058849104c\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{server}}/airports"
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Airports",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{server}}/airports"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Airport By Id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{server}}/airports/id/:id",
+              "host": ["{{server}}"],
+              "path": ["airports", "id", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "40b1b47f-bdd7-4e53-8f72-67cea100ac59"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Airport By Code",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{server}}/airports/code/:code",
+              "host": ["{{server}}"],
+              "path": ["airports", "code", ":code"],
+              "variable": [
+                {
+                  "key": "code",
+                  "value": "BOM"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Airports Of City Name",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{server}}/airports/city/name/:name",
+              "host": ["{{server}}"],
+              "path": ["airports", "city", "name", ":name"],
+              "variable": [
+                {
+                  "key": "name",
+                  "value": "Delhi"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Airports Of City Name Id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{server}}/airports/city/id/:id",
+              "host": ["{{server}}"],
+              "path": ["airports", "city", "id", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "701eb299-8846-4477-8031-15ec0e7a3735"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Airport Name",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Indira Gandhi International Airport\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{server}}/airports/name/:id",
+              "host": ["{{server}}"],
+              "path": ["airports", "name", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "32ebbc85-b975-402f-99db-dba7280c6041"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Airport Code",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"code\": \"DLE\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{server}}/airports/code/:id",
+              "host": ["{{server}}"],
+              "path": ["airports", "code", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "32ebbc85-b975-402f-99db-dba7280c6041"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Airport By Id",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{server}}/airports/:id",
+              "host": ["{{server}}"],
+              "path": ["airports", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "a6d6db01-7431-4179-be83-1e9ccadac211"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Flight",
+      "item": [
+        {
+          "name": "Create Flight",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"airplane_id\": \"014a2b11-9e6b-462b-82c0-d1aa52a41e8f\",\r\n    \"departure_airport_id\": \"32ebbc85-b975-402f-99db-dba7280c6041\",\r\n    \"arrival_airport_id\": \"b7487d72-0752-408c-84ea-e48bcf0c2b3e\",\r\n    \"departure_time\": \"2025-04-24T15:30:00\",\r\n    \"arrival_time\": \"2025-04-24T18:00:00\",\r\n    \"status\": \"SCHEDULED\",\r\n    \"price\": \"7000\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{server}}/flight"
+          },
+          "response": []
+        },
+        {
+          "name": "Get all Flights",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{server}}/flight"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Flight by flight number",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{server}}/flight/flight_number/:flight_number",
+              "host": ["{{server}}"],
+              "path": ["flight", "flight_number", ":flight_number"],
+              "variable": [
+                {
+                  "key": "flight_number",
+                  "value": "FLIGHT_ff01c2a4"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Flight with Detail By Flight Id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{server}}/flight/:id",
+              "host": ["{{server}}"],
+              "path": ["flight", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "b289da30-898f-417a-9cb6-3e840ee8b7e3"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Flight arrival time",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"arrival_time\": \"2025-04-24T13:30:00\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{server}}/flight/:id/arrival_time",
+              "host": ["{{server}}"],
+              "path": ["flight", ":id", "arrival_time"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "b289da30-898f-417a-9cb6-3e840ee8b7e3"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Flight departure time",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"departure_time\": \"2025-04-24T10:30:00\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{server}}/flight/:id/departure_time",
+              "host": ["{{server}}"],
+              "path": ["flight", ":id", "departure_time"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "b289da30-898f-417a-9cb6-3e840ee8b7e3"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Flight price",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"price\": 9500.80\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{server}}/flight/:id/price",
+              "host": ["{{server}}"],
+              "path": ["flight", ":id", "price"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "b289da30-898f-417a-9cb6-3e840ee8b7e3"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Flight status",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"status\": \"BOARDING\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{server}}/flight/:id/status",
+              "host": ["{{server}}"],
+              "path": ["flight", ":id", "status"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "b289da30-898f-417a-9cb6-3e840ee8b7e3"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Flight arrival airport id",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"arrival_airport_id\": \"32ebbc85-b975-402f-99db-dba7280c6041\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{server}}/flight/:id/arrival_airport",
+              "host": ["{{server}}"],
+              "path": ["flight", ":id", "arrival_airport"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "b289da30-898f-417a-9cb6-3e840ee8b7e3"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Flight departure airport id",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"departure_airport_id\": \"b7487d72-0752-408c-84ea-e48bcf0c2b3e\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{server}}/flight/:id/departure_airport",
+              "host": ["{{server}}"],
+              "path": ["flight", ":id", "departure_airport"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "b289da30-898f-417a-9cb6-3e840ee8b7e3"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Flight",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{server}}/flight/:id",
+              "host": ["{{server}}"],
+              "path": ["flight", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "exec": [""]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "exec": [""]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "server",
+      "value": "http://localhost:8080/api/v1/",
+      "type": "string"
+    }
+  ]
 }
