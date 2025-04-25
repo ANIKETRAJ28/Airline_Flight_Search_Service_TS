@@ -1,6 +1,4 @@
-import { ICity } from './cities.interface';
-import { ICountry } from './countries.interface';
-
+import { ICityWithCountry } from './cities.interface';
 export interface IAirportRequest {
   name: string;
   code: string;
@@ -16,8 +14,7 @@ export interface IAirportWithCityAndCountry extends Omit<IAirportRequest, 'city_
   id: string;
   name: string;
   code: string;
-  city: ICity;
-  country: ICountry;
+  city: ICityWithCountry;
   created_at: Date;
   updated_at: Date;
 }
