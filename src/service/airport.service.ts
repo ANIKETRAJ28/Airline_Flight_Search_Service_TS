@@ -1,4 +1,4 @@
-import { IAirport, IAirportRequest, IAirportWithCityAndCountry } from '../interface/airports.interface';
+import { IAirportRequest, IAirportWithCityAndCountry } from '../interface/airports.interface';
 import { AirportRepository } from '../repository/airport.repositry';
 
 export class AirportService {
@@ -8,7 +8,7 @@ export class AirportService {
     this.airportRepository = new AirportRepository();
   }
 
-  async createAirport(airport: IAirportRequest): Promise<IAirport> {
+  async createAirport(airport: IAirportRequest): Promise<IAirportWithCityAndCountry> {
     try {
       return await this.airportRepository.createAirport(airport);
     } catch (error) {
@@ -17,7 +17,7 @@ export class AirportService {
     }
   }
 
-  async getAllAirports(): Promise<IAirport[]> {
+  async getAllAirports(): Promise<IAirportWithCityAndCountry[]> {
     try {
       return await this.airportRepository.getAllAirports();
     } catch (error) {
@@ -26,7 +26,7 @@ export class AirportService {
     }
   }
 
-  async getAirportById(id: string): Promise<IAirport> {
+  async getAirportById(id: string): Promise<IAirportWithCityAndCountry> {
     try {
       return await this.airportRepository.getAirportById(id);
     } catch (error) {
@@ -35,7 +35,7 @@ export class AirportService {
     }
   }
 
-  async getAirportByCode(code: string): Promise<IAirport> {
+  async getAirportByCode(code: string): Promise<IAirportWithCityAndCountry> {
     try {
       return await this.airportRepository.getAirportByCode(code);
     } catch (error) {
@@ -62,7 +62,7 @@ export class AirportService {
     }
   }
 
-  async updateAirportName(id: string, name: string): Promise<IAirport> {
+  async updateAirportName(id: string, name: string): Promise<IAirportWithCityAndCountry> {
     try {
       return await this.airportRepository.updateAirportName(id, name);
     } catch (error) {
@@ -71,7 +71,7 @@ export class AirportService {
     }
   }
 
-  async updateAirportCode(id: string, code: string): Promise<IAirport> {
+  async updateAirportCode(id: string, code: string): Promise<IAirportWithCityAndCountry> {
     try {
       return await this.airportRepository.updateAirportCode(id, code);
     } catch (error) {
