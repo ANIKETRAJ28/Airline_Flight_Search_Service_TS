@@ -51,12 +51,12 @@ export class AirportController {
 
   getAllAirportsOfCityByCityId = async (req: Request, res: Response): Promise<void> => {
     try {
-      const { cityId } = req.params;
-      if (!cityId) {
+      const { id } = req.params;
+      if (!id) {
         res.status(400).json({ message: 'City ID is required' });
         return;
       }
-      const airports = await this.airportService.getAllAirportsOfCityByCityId(cityId);
+      const airports = await this.airportService.getAllAirportsOfCityByCityId(id);
       res.status(200).json(airports);
     } catch (error) {
       console.error('Error in AirportController: getAllAirportsOfCityByCityId:', error);
