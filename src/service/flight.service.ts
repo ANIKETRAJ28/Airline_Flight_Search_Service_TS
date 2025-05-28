@@ -54,6 +54,21 @@ export class FlightService {
     }
   }
 
+  async getFlightsForArrivalAndDepartureCity(
+    departure_city_id: string,
+    arrival_city_id: string,
+    date: Date,
+  ): Promise<IFlightWithDetails[]> {
+    try {
+      return await this.flightRepository.getFlightsForArrivalAndDepartureCity(departure_city_id, arrival_city_id, date);
+    } catch (error) {
+      console.error('Error in FlightService: getFlightsForArrivalAndDepartureCity:', error);
+      throw new Error(
+        `Failed to fetch flights for departure city ${departure_city_id} and arrival city ${arrival_city_id}. Please try again later.`,
+      );
+    }
+  }
+
   async updateFlightArrivalTime(id: string, arrival_time: Date): Promise<IFlightWithDetails> {
     try {
       return await this.flightRepository.updateFlightArrivalTime(id, arrival_time);

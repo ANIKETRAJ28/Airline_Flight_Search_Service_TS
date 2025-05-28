@@ -79,6 +79,27 @@ export class FlightController {
     }
   };
 
+  getFlightsForArrivalAndDepartureCity = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const departureCityId = req.params.departure_city_id as string;
+      const arrivalCityId = req.params.arrival_city_id as string;
+      const date = req.params.date as string;
+      if (!departureCityId || !arrivalCityId || !date) {
+        res.status(400).json({ message: 'Invalid departure or arrival city ID or date.' });
+        return;
+      }
+      const flights = await this.flightService.getFlightsForArrivalAndDepartureCity(
+        departureCityId,
+        arrivalCityId,
+        new Date(date),
+      );
+      res.status(200).json(flights);
+    } catch (error) {
+      console.error('Error in FlightController: getFlightsForArrivalAndDepartureCity:', error);
+      res.status(500).json({ message: 'Failed to fetch flights for the specified cities.' });
+    }
+  };
+
   updateFlightArrivalTime = async (req: Request, res: Response): Promise<void> => {
     try {
       const flightId = req.params.id;

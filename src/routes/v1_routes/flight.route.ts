@@ -8,7 +8,12 @@ const flightController = new FlightController();
 
 flightRouter.post('/', jwtMiddleware, checkSuperAdminRole, flightController.createFlight);
 flightRouter.get('/', jwtMiddleware, checkSuperAdminRole, flightController.getAllFlights);
-flightRouter.get('/:id', jwtMiddleware, flightController.getFlightWithDetailById);
+flightRouter.get('/:id', flightController.getFlightWithDetailById);
+flightRouter.get(
+  '/departure_city/:departure_city_id/arrival_city/:arrival_city_id/date/:date',
+  jwtMiddleware,
+  flightController.getFlightsForArrivalAndDepartureCity,
+);
 flightRouter.get('/flight_number/:flight_number', jwtMiddleware, flightController.getFlightByFlightNumber);
 flightRouter.put('/:id/arrival_time', jwtMiddleware, checkSuperAdminRole, flightController.updateFlightArrivalTime);
 flightRouter.put('/:id/departure_time', jwtMiddleware, checkSuperAdminRole, flightController.updateFlightDepartureTime);
