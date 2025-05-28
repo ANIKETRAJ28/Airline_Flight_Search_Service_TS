@@ -14,12 +14,20 @@ This project is one of several microservices that work together:
 - 🚪 [Booking Service](https://github.com/ANIKETRAJ28/Airline_Booking_Service_TS)
 - 🔔 [Reminder Service](https://github.com/ANIKETRAJ28/Airline_Reminder_Service_TS)
 
+## 🛠 Tech Stack
+
+- **Node.js** with **TypeScript**
+- **Express.js** for API server
+- **PostgreSQL** as the database
+- **Prisma** for ORM
+<!-- - **Docker** (if used) -->
+
 ## Project Setup
 
 ### Clone Project
 
 ```
-git clone https://github.com/ANIKETRAJ28/Airline_Reminder_Service_TS.git
+git clone https://github.com/ANIKETRAJ28/Airline_Flight_Search_Service_TS.git
 ```
 
 ### Install Dependencies
@@ -98,7 +106,7 @@ npm run start
 
 <img src="./image.png" width="400"/>
 
-## Apis Setup
+## API Setup
 
 Import [Postman Collection](./Flight_Search_Service.postman_collection.json) in your postman
 
@@ -109,3 +117,8 @@ Import [Postman Collection](./Flight_Search_Service.postman_collection.json) in 
 - Airplane API
 - Airport API
 - Flight API
+
+## 🤝 Contributing
+
+Contributions, issues and feature requests are welcome!
+Feel free to check the [issues page](../../issues)
