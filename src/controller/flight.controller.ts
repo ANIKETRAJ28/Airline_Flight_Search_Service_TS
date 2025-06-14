@@ -35,32 +35,32 @@ export class FlightController {
     }
   };
 
-  getFlightById = async (req: Request, res: Response): Promise<void> => {
+  getFlightByIdForAdmin = async (req: Request, res: Response): Promise<void> => {
     try {
       const flightId = req.params.id;
       if (!flightId) {
         res.status(400).json({ message: 'Invalid flight ID.' });
         return;
       }
-      const flight = await this.flightService.getFlightById(flightId);
+      const flight = await this.flightService.getFlightByIdForAdmin(flightId);
       res.status(200).json(flight);
     } catch (error) {
-      console.error('Error in FlightController: getFlightById:', error);
+      console.error('Error in FlightController: getFlightByIdForAdmin:', error);
       res.status(500).json({ message: 'Failed to fetch flight.' });
     }
   };
 
-  getFlightWithDetailById = async (req: Request, res: Response): Promise<void> => {
+  getFlighByIdForUser = async (req: Request, res: Response): Promise<void> => {
     try {
       const flightId = req.params.id;
       if (!flightId) {
         res.status(400).json({ message: 'Invalid flight ID.' });
         return;
       }
-      const flight = await this.flightService.getFlightWithDetailById(flightId);
+      const flight = await this.flightService.getFlightByIdForUser(flightId);
       res.status(200).json(flight);
     } catch (error) {
-      console.error('Error in FlightController: getFlightWithDetailByFlightId:', error);
+      console.error('Error in FlightController: getFlighByIdForUser:', error);
       res.status(500).json({ message: 'Failed to fetch flight details.' });
     }
   };

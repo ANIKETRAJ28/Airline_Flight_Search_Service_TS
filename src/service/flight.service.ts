@@ -1,4 +1,4 @@
-import { IFlightRequest, IFlightWithDetails } from '../interface/flights.interface';
+import { IFlightRequest, IFlightWithDetails, IFlightWithDetailsForUser } from '../interface/flights.interface';
 import { FlightRepository } from '../repository/flight.repository';
 import { IFlightStatus } from '../types/flightStatus.types';
 
@@ -27,21 +27,21 @@ export class FlightService {
     }
   }
 
-  async getFlightById(id: string): Promise<IFlightWithDetails> {
+  async getFlightByIdForAdmin(id: string): Promise<IFlightWithDetails> {
     try {
-      return await this.flightRepository.getFlightById(id);
+      return await this.flightRepository.getFlightByIdForAdmin(id);
     } catch (error) {
-      console.error('Error in FlightService: getFlightById:', error);
+      console.error('Error in FlightService: getFlightByIdForAdmin:', error);
       throw new Error(`Failed to fetch flight with id ${id}. Please try again later.`);
     }
   }
 
-  async getFlightWithDetailById(id: string): Promise<IFlightWithDetails> {
+  async getFlightByIdForUser(id: string): Promise<IFlightWithDetailsForUser> {
     try {
-      return this.flightRepository.getFlightWithDetailById(id);
+      return await this.flightRepository.getFlightByIdForUser(id);
     } catch (error) {
-      console.error('Error in FlightService: getFlightWithDetailByFlightId:', error);
-      throw new Error(`Failed to fetch flight details for id ${id}. Please try again later.`);
+      console.error('Error in FlightService: getFlightByIdForUser:', error);
+      throw new Error(`Failed to fetch flight with id ${id}. Please try again later.`);
     }
   }
 

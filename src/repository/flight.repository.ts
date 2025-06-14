@@ -1,20 +1,44 @@
 import { Pool, PoolClient } from 'pg';
 
-import { IFlightRequest, IFlightWithDetails } from '../interface/flights.interface';
+import {
+  IClassWindowPrice,
+  IClassWindowPriceForUser,
+  IFlightRequest,
+  IFlightWithDetails,
+  IFlightWithDetailsForUser,
+} from '../interface/flights.interface';
 import { getPool } from '../util/dbPool.util';
 import { IFlightStatus } from '../types/flightStatus.types';
+import { AirplaneRepository } from './airplane.repository';
 
 export class FlightRepository {
   private pool: Pool = getPool();
+  private airplaneRepository: AirplaneRepository;
 
-  constructor() {}
+  constructor() {
+    this.airplaneRepository = new AirplaneRepository();
+  }
 
   async createFlight(data: IFlightRequest): Promise<IFlightWithDetails> {
     const client: PoolClient = await this.pool.connect();
     try {
+      const airplane = await this.airplaneRepository.getAirplaneById(data.airplane_id);
+      const total_seats =
+        data.class_window_price.economy.first_window_seats +
+        data.class_window_price.economy.second_window_seats +
+        data.class_window_price.economy.third_window_seats +
+        data.class_window_price.business.first_window_seats +
+        data.class_window_price.business.second_window_seats +
+        data.class_window_price.premium.first_window_seats +
+        data.class_window_price.premium.second_window_seats;
+      if (airplane.capacity !== total_seats) {
+        throw new Error(
+          `Airplane capacity ${airplane.capacity} does not match total seats ${total_seats} from class window price`,
+        );
+      }
       let query = `INSERT INTO flights 
-                    (airplane_id, departure_airport_id, arrival_airport_id, departure_time, arrival_time, status, price) 
-                    VALUES ($1, $2, $3, $4, $5, $6, $7) 
+                    (airplane_id, departure_airport_id, arrival_airport_id, departure_time, arrival_time, status, price, class_window_price) 
+                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8) 
                   RETURNING id`;
       const flightPayload = await client.query(query, [
         data.airplane_id,
@@ -24,6 +48,7 @@ export class FlightRepository {
         data.arrival_time,
         data.status,
         data.price,
+        JSON.stringify(data.class_window_price),
       ]);
       const flight_id = flightPayload.rows[0].id;
       query = `SELECT f.*, 
@@ -105,6 +130,7 @@ export class FlightRepository {
           created_at: flight.arrival_airport_created_at,
           updated_at: flight.arrival_airport_updated_at,
         },
+        class_window_price: data.class_window_price,
       };
     } catch (error) {
       console.log('Error in FlightRepository: createFlight:', error);
@@ -135,64 +161,67 @@ export class FlightRepository {
                       INNER JOIN countries aaco ON aac.country_id = aaco.id`;
       const result = await client.query(query);
       const flights = result.rows;
-      return flights.map((flight) => ({
-        id: flight.id,
-        flight_number: flight.flight_number,
-        departure_time: flight.departure_time,
-        arrival_time: flight.arrival_time,
-        status: flight.status,
-        price: flight.price,
-        created_at: flight.created_at,
-        updated_at: flight.updated_at,
-        airplane: {
-          id: flight.airplane_id,
-          name: flight.airplane_name,
-          capacity: flight.airplane_capacity,
-          code: flight.airplane_code,
-          created_at: flight.airplane_created_at,
-          updated_at: flight.airplane_updated_at,
-        },
-        departure_airport: {
-          id: flight.departure_airport_id,
-          name: flight.departure_airport_name,
-          code: flight.departure_airport_code,
-          city: {
-            id: flight.departure_airport_city_id,
-            name: flight.departure_airport_city_name,
-            country: {
-              id: flight.departure_airport_country_id,
-              name: flight.departure_airport_country_name,
-              code: flight.departure_airport_country_code,
-              created_at: flight.departure_airport_country_created_at,
-              updated_at: flight.departure_airport_country_updated_at,
-            },
-            created_at: flight.departure_airport_city_created_at,
-            updated_at: flight.departure_airport_city_updated_at,
+      return flights.map((flight) => {
+        return {
+          id: flight.id,
+          flight_number: flight.flight_number,
+          departure_time: flight.departure_time,
+          arrival_time: flight.arrival_time,
+          status: flight.status,
+          price: flight.price,
+          created_at: flight.created_at,
+          updated_at: flight.updated_at,
+          airplane: {
+            id: flight.airplane_id,
+            name: flight.airplane_name,
+            capacity: flight.airplane_capacity,
+            code: flight.airplane_code,
+            created_at: flight.airplane_created_at,
+            updated_at: flight.airplane_updated_at,
           },
-          created_at: flight.departure_airport_created_at,
-          updated_at: flight.departure_airport_updated_at,
-        },
-        arrival_airport: {
-          id: flight.arrival_airport_id,
-          name: flight.arrival_airport_name,
-          code: flight.arrival_airport_code,
-          city: {
-            id: flight.arrival_airport_city_id,
-            name: flight.arrival_airport_city_name,
-            country: {
-              id: flight.arrival_airport_country_id,
-              name: flight.arrival_airport_country_name,
-              code: flight.arrival_airport_country_code,
-              created_at: flight.arrival_airport_country_created_at,
-              updated_at: flight.arrival_airport_country_updated_at,
+          departure_airport: {
+            id: flight.departure_airport_id,
+            name: flight.departure_airport_name,
+            code: flight.departure_airport_code,
+            city: {
+              id: flight.departure_airport_city_id,
+              name: flight.departure_airport_city_name,
+              country: {
+                id: flight.departure_airport_country_id,
+                name: flight.departure_airport_country_name,
+                code: flight.departure_airport_country_code,
+                created_at: flight.departure_airport_country_created_at,
+                updated_at: flight.departure_airport_country_updated_at,
+              },
+              created_at: flight.departure_airport_city_created_at,
+              updated_at: flight.departure_airport_city_updated_at,
             },
-            created_at: flight.arrival_airport_city_created_at,
-            updated_at: flight.arrival_airport_city_updated_at,
+            created_at: flight.departure_airport_created_at,
+            updated_at: flight.departure_airport_updated_at,
           },
-          created_at: flight.arrival_airport_created_at,
-          updated_at: flight.arrival_airport_updated_at,
-        },
-      }));
+          arrival_airport: {
+            id: flight.arrival_airport_id,
+            name: flight.arrival_airport_name,
+            code: flight.arrival_airport_code,
+            city: {
+              id: flight.arrival_airport_city_id,
+              name: flight.arrival_airport_city_name,
+              country: {
+                id: flight.arrival_airport_country_id,
+                name: flight.arrival_airport_country_name,
+                code: flight.arrival_airport_country_code,
+                created_at: flight.arrival_airport_country_created_at,
+                updated_at: flight.arrival_airport_country_updated_at,
+              },
+              created_at: flight.arrival_airport_city_created_at,
+              updated_at: flight.arrival_airport_city_updated_at,
+            },
+            created_at: flight.arrival_airport_created_at,
+            updated_at: flight.arrival_airport_updated_at,
+          },
+          class_window_price: flight.class_window_price,
+        };
+      });
     } catch (error) {
       console.log('Error in FlightRepository: getAllFlights:', error);
       throw error;
@@ -201,7 +230,7 @@ export class FlightRepository {
     }
   }
 
-  async getFlightById(id: string): Promise<IFlightWithDetails> {
+  async getFlightByIdForAdmin(id: string): Promise<IFlightWithDetails> {
     const client: PoolClient = await this.pool.connect();
     try {
       const query = `SELECT f.*, 
@@ -283,16 +312,17 @@ export class FlightRepository {
           created_at: flight.arrival_airport_created_at,
           updated_at: flight.arrival_airport_updated_at,
         },
+        class_window_price: flight.class_window_price,
       };
     } catch (error) {
-      console.log('Error in FlightRepository: getFlightById:', error);
+      console.log('Error in FlightRepository: getFlightByIdForAdmin:', error);
       throw error;
     } finally {
       await client.release();
     }
   }
 
-  async getFlightWithDetailById(id: string): Promise<IFlightWithDetails> {
+  async getFlightByIdForUser(id: string): Promise<IFlightWithDetailsForUser> {
     const client: PoolClient = await this.pool.connect();
     try {
       const query = `SELECT f.*, 
@@ -303,20 +333,63 @@ export class FlightRepository {
                     aac.id AS arrival_airport_city_id, aac.name AS arrival_airport_city_name, aac.country_id AS arrival_airport_country_id, aac.created_at AS arrival_airport_city_created_at, aac.updated_at AS arrival_airport_city_updated_at, 
                     daco.id AS departure_airport_country_id, daco.name AS departure_airport_country_name, daco.code AS departure_airport_country_code, daco.created_at AS departure_airport_country_created_at, daco.updated_at AS departure_airport_country_updated_at, 
                     aaco.id AS arrival_airport_country_id, aaco.name AS arrival_airport_country_name, aaco.code AS arrival_airport_country_code, aaco.created_at AS arrival_airport_country_created_at, aaco.updated_at AS arrival_airport_country_updated_at
-                      FROM flights f
-                        INNER JOIN airplanes a ON f.airplane_id = a.id
-                        INNER JOIN airports da ON f.departure_airport_id = da.id
-                        INNER JOIN airports aa ON f.arrival_airport_id = aa.id
-                        INNER JOIN cities dac ON da.city_id = dac.id
-                        INNER JOIN cities aac ON aa.city_id = aac.id
-                        INNER JOIN countries daco ON dac.country_id = daco.id
-                        INNER JOIN countries aaco ON aac.country_id = aaco.id
-                      WHERE f.id = $1`;
+                    FROM flights f
+                      INNER JOIN airplanes a ON f.airplane_id = a.id
+                      INNER JOIN airports da ON f.departure_airport_id = da.id
+                      INNER JOIN airports aa ON f.arrival_airport_id = aa.id
+                      INNER JOIN cities dac ON da.city_id = dac.id
+                      INNER JOIN cities aac ON aa.city_id = aac.id
+                      INNER JOIN countries daco ON dac.country_id = daco.id
+                      INNER JOIN countries aaco ON aac.country_id = aaco.id
+                    WHERE f.id = $1`;
       const result = await client.query(query, [id]);
       const flight = result.rows[0];
       if (flight === null) {
         throw new Error(`Flight with id ${id} not found`);
       }
+      const class_window_price: IClassWindowPrice = flight.class_window_price;
+      const class_price_seats: IClassWindowPriceForUser = {
+        business: {
+          seats:
+            class_window_price.business.first_window_seats > 0
+              ? class_window_price.business.first_window_seats
+              : class_window_price.business.second_window_seats,
+          price:
+            class_window_price.business.first_window_seats > 0
+              ? class_window_price.business.first_window_percentage * flight.price
+              : class_window_price.business.first_window_seats > 0
+                ? class_window_price.business.second_window_percentage * flight.price
+                : 0,
+        },
+        premium: {
+          seats:
+            class_window_price.premium.first_window_seats > 0
+              ? class_window_price.premium.first_window_seats
+              : class_window_price.premium.second_window_seats,
+          price:
+            class_window_price.premium.first_window_seats > 0
+              ? class_window_price.premium.first_window_percentage * flight.price
+              : class_window_price.premium.second_window_seats > 0
+                ? class_window_price.premium.second_window_percentage * flight.price
+                : 0,
+        },
+        economy: {
+          seats:
+            class_window_price.economy.first_window_seats > 0
+              ? class_window_price.economy.first_window_seats
+              : class_window_price.economy.second_window_seats > 0
+                ? class_window_price.economy.second_window_seats
+                : class_window_price.economy.third_window_seats,
+          price:
+            class_window_price.economy.first_window_seats > 0
+              ? class_window_price.economy.first_window_percentage * flight.price
+              : class_window_price.economy.second_window_seats > 0
+                ? class_window_price.economy.second_window_percentage * flight.price
+                : class_window_price.economy.third_window_seats > 0
+                  ? class_window_price.economy.third_window_percentage * flight.price
+                  : 0,
+        },
+      };
       return {
         id: flight.id,
         flight_number: flight.flight_number,
@@ -374,9 +447,10 @@ export class FlightRepository {
           created_at: flight.arrival_airport_created_at,
           updated_at: flight.arrival_airport_updated_at,
         },
+        class_price_seats,
       };
     } catch (error) {
-      console.log('Error in FlightRepository: getFlightWithDetailById:', error);
+      console.log('Error in FlightRepository: getFlightByIdForUser:', error);
       throw error;
     } finally {
       await client.release();
@@ -386,8 +460,7 @@ export class FlightRepository {
   async getFlightsForArrivalAndDepartureCity(
     departure_city_id: string,
     arrival_city_id: string,
-    date: Date,
-    // date: string,
+    date: Date, // date: string,
   ): Promise<IFlightWithDetails[]> {
     const client: PoolClient = await this.pool.connect();
     try {
@@ -470,6 +543,7 @@ export class FlightRepository {
           created_at: flight.arrival_airport_created_at,
           updated_at: flight.arrival_airport_updated_at,
         },
+        class_window_price: flight.class_window_price,
       }));
       return flightsWithDetails;
     } catch (error) {
@@ -562,6 +636,7 @@ export class FlightRepository {
           created_at: flight.arrival_airport_created_at,
           updated_at: flight.arrival_airport_updated_at,
         },
+        class_window_price: flight.class_window_price,
       };
     } catch (error) {
       console.log('Error in FlightRepository: getFlightByNumber:', error);
@@ -655,6 +730,7 @@ export class FlightRepository {
           created_at: flight.arrival_airport_created_at,
           updated_at: flight.arrival_airport_updated_at,
         },
+        class_window_price: flight.class_window_price,
       };
     } catch (error) {
       console.log('Error in FlightRepository: updateArrivalTime:', error);
@@ -748,6 +824,7 @@ export class FlightRepository {
           created_at: flight.arrival_airport_created_at,
           updated_at: flight.arrival_airport_updated_at,
         },
+        class_window_price: flight.class_window_price,
       };
     } catch (error) {
       console.log('Error in FlightRepository: updateDepartureTime:', error);
@@ -841,6 +918,7 @@ export class FlightRepository {
           created_at: flight.arrival_airport_created_at,
           updated_at: flight.arrival_airport_updated_at,
         },
+        class_window_price: flight.class_window_price,
       };
     } catch (error) {
       console.log('Error in FlightRepository: updateFlightStatus:', error);
@@ -934,6 +1012,7 @@ export class FlightRepository {
           created_at: flight.arrival_airport_created_at,
           updated_at: flight.arrival_airport_updated_at,
         },
+        class_window_price: flight.class_window_price,
       };
     } catch (error) {
       console.log('Error in FlightRepository: updateFlightPrice:', error);
@@ -1027,6 +1106,7 @@ export class FlightRepository {
           created_at: flight.arrival_airport_created_at,
           updated_at: flight.arrival_airport_updated_at,
         },
+        class_window_price: flight.class_window_price,
       };
     } catch (error) {
       console.log('Error in FlightRepository: updateDepartureAirport:', error);
@@ -1120,6 +1200,7 @@ export class FlightRepository {
           created_at: flight.arrival_airport_created_at,
           updated_at: flight.arrival_airport_updated_at,
         },
+        class_window_price: flight.class_window_price,
       };
     } catch (error) {
       console.log('Error in FlightRepository: updateArrivalAirport:', error);
@@ -1213,6 +1294,7 @@ export class FlightRepository {
           created_at: flight.arrival_airport_created_at,
           updated_at: flight.arrival_airport_updated_at,
         },
+        class_window_price: flight.class_window_price,
       };
     } catch (error) {
       console.log('Error in FlightRepository: updateFlightAirplane:', error);

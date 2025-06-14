@@ -19,14 +19,14 @@ This project is one of several microservices that work together:
 - **Node.js** with **TypeScript**
 - **Express.js** for API server
 - **PostgreSQL** as the database
-- **Prisma** for ORM
+- **Node-pg-migrate** for database migrations
 <!-- - **Docker** (if used) -->
 
 ## Project Setup
 
 ### Clone Project
 
-```
+```bash
 git clone https://github.com/ANIKETRAJ28/Airline_Flight_Search_Service_TS.git
 ```
 
@@ -40,7 +40,7 @@ npm install
 
 Add the following code
 
-```
+```bash
 {
   "db": {
     "user": "postgres",
@@ -54,13 +54,13 @@ Add the following code
 
 ### Create `.env` file
 
-```
+```bash
 touch .env
 ```
 
 ### Add env variables
 
-```
+```bash
 PORT=5000
 DB_USER=postgres
 DB_PASSWORD=postgres
