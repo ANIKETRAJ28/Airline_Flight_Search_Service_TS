@@ -1,4 +1,4 @@
-import { IFlightStatus } from '../types/flightStatus.types';
+import { IFlightStatus } from '../types/flight.types';
 import { IAirplane } from './airplanes.interface';
 import { IAirportWithCityAndCountry } from './airports.interface';
 
@@ -71,4 +71,10 @@ export interface IFlightWithDetailsForUser
   departure_airport: IAirportWithCityAndCountry;
   arrival_airport: IAirportWithCityAndCountry;
   class_price_seats: IClassWindowPriceForUser;
+}
+
+export interface IFlightQueue extends IFlight {
+  hops: number;
+  min_layover_time: number;
+  max_layover_time: number;
 }

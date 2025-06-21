@@ -58,7 +58,7 @@ export class FlightService {
     departure_city_id: string,
     arrival_city_id: string,
     date: Date,
-  ): Promise<IFlightWithDetails[]> {
+  ): Promise<IFlightWithDetailsForUser[][]> {
     try {
       return await this.flightRepository.getFlightsForArrivalAndDepartureCity(departure_city_id, arrival_city_id, date);
     } catch (error) {
