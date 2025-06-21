@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { FlightService } from '../service/flight.service';
 import { IFlightRequest } from '../interface/flights.interface';
-import { IFlightStatus } from '../types/flightStatus.types';
+import { IFlightStatus, IFlightWindow } from '../types/flight.types';
 
 export class FlightController {
   private flightService: FlightService;
@@ -209,6 +209,27 @@ export class FlightController {
     } catch (error) {
       console.error('Error in FlightController: updateFlightAirplane:', error);
       res.status(500).json({ message: 'Failed to update flight airplane.' });
+    }
+  };
+
+  updateFlightWindowSeats = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const flightId = req.params.id;
+      const window_type: IFlightWindow = req.body.window_type;
+      const windowSeats = req.body.seats;
+      if (!flightId || !window_type || !windowSeats) {
+        res.status(400).json({ message: 'Invalid flight ID, window type, or seats.' });
+        return;
+      }
+      if (typeof windowSeats !== 'number' || windowSeats < 0) {
+        res.status(400).json({ message: 'Invalid number of window seats.' });
+        return;
+      }
+      const flight = await this.flightService.updateFlightWindowSeats(flightId, window_type, windowSeats);
+      res.status(200).json(flight);
+    } catch (error) {
+      console.error('Error in FlightController: updateFlightWindowSeats:', error);
+      res.status(500).json({ message: 'Failed to update flight window seats.' });
     }
   };
 

@@ -1,6 +1,6 @@
 import { IFlightRequest, IFlightWithDetails, IFlightWithDetailsForUser } from '../interface/flights.interface';
 import { FlightRepository } from '../repository/flight.repository';
-import { IFlightStatus } from '../types/flightStatus.types';
+import { IFlightStatus, IFlightWindow } from '../types/flight.types';
 
 export class FlightService {
   private flightRepository: FlightRepository;
@@ -75,6 +75,15 @@ export class FlightService {
     } catch (error) {
       console.error('Error in FlightService: updateFlightArrivalTime:', error);
       throw new Error(`Failed to update flight arrival time for id ${id}. Please try again later.`);
+    }
+  }
+
+  async updateFlightWindowSeats(flight_id: string, window_type: IFlightWindow, seats: number): Promise<void> {
+    try {
+      await this.flightRepository.updateFlightWindowSeats(flight_id, window_type, seats);
+    } catch (error) {
+      console.error('Error in FlightService: updateFlightWindowSeats:', error);
+      throw new Error(`Failed to update flight window seats for flight id ${flight_id}. Please try again later.`);
     }
   }
 
