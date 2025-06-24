@@ -6,8 +6,8 @@ import { checkSuperAdminRole, jwtMiddleware } from '../../middleware/auth.middle
 export const flightRouter = Router();
 const flightController = new FlightController();
 
-flightRouter.post('/' /*, jwtMiddleware, checkSuperAdminRole*/, flightController.createFlight);
-flightRouter.get('/' /*, jwtMiddleware, checkSuperAdminRole*/, flightController.getAllFlights);
+flightRouter.post('/', jwtMiddleware, checkSuperAdminRole, flightController.createFlight);
+flightRouter.get('/', jwtMiddleware, checkSuperAdminRole, flightController.getAllFlights);
 flightRouter.get('/:id', flightController.getFlightByIdForAdmin);
 flightRouter.get(
   '/departure_city/:departure_city_id/arrival_city/:arrival_city_id/date/:date',
@@ -19,6 +19,7 @@ flightRouter.put('/:id/arrival_time', jwtMiddleware, checkSuperAdminRole, flight
 flightRouter.put('/:id/departure_time', jwtMiddleware, checkSuperAdminRole, flightController.updateFlightDepartureTime);
 flightRouter.put('/:id/price', jwtMiddleware, checkSuperAdminRole, flightController.updateFlightPrice);
 flightRouter.put('/:id/status', jwtMiddleware, checkSuperAdminRole, flightController.updateFlightStatus);
+flightRouter.put('/:id/seat', flightController.updateFlightWindowSeats);
 flightRouter.put(
   '/:id/arrival_airport',
   jwtMiddleware,
