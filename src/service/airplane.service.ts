@@ -9,83 +9,38 @@ export class AirplaneService {
   }
 
   async getAllAirplanes(): Promise<IAirplane[]> {
-    try {
-      return await this.airplaneRepository.getAllAirplanes();
-    } catch (error) {
-      console.log('Error in AirplaneService: getAllAirplanes:', error);
-      throw error;
-    }
+    return await this.airplaneRepository.getAllAirplanes();
   }
 
   async getAirplaneById(id: string): Promise<IAirplane> {
-    try {
-      return await this.airplaneRepository.getAirplaneById(id);
-    } catch (error) {
-      console.log('Error in AirplaneService: getAirplaneById:', error);
-      throw error;
-    }
+    return await this.airplaneRepository.getAirplaneById(id);
   }
 
   async getAirplaneByCode(code: string): Promise<IAirplane> {
-    try {
-      return await this.airplaneRepository.getAirplaneByCode(code);
-    } catch (error) {
-      console.log('Error in AirplaneService: getAirplaneByCode:', error);
-      throw error;
-    }
+    return await this.airplaneRepository.getAirplaneByCode(code);
   }
 
   async getAirplaneByName(name: string): Promise<IAirplane> {
-    try {
-      return await this.airplaneRepository.getAirplaneByName(name);
-    } catch (error) {
-      console.log('Error in AirplaneService: getAirplaneByName:', error);
-      throw error;
-    }
+    return await this.airplaneRepository.getAirplaneByName(name);
   }
 
   async createAirplane(airplane: IAirplaneRequest): Promise<IAirplane> {
-    try {
-      return await this.airplaneRepository.createAirplane(airplane);
-    } catch (error) {
-      console.log('Error in AirplaneService: createAirplane:', error);
-      throw error;
-    }
+    return await this.airplaneRepository.createAirplane(airplane);
   }
 
   async updateAirplaneName(id: string, name: string): Promise<IAirplane> {
-    try {
-      return await this.airplaneRepository.updateAirplaneName(id, name);
-    } catch (error) {
-      console.log('Error in AirplaneService: updateAirplaneName:', error);
-      throw error;
-    }
+    return await this.airplaneRepository.updateAirplaneName(id, name);
   }
 
   async updateAirplaneCode(id: string, code: string): Promise<IAirplane> {
-    try {
-      return await this.airplaneRepository.updateAirplaneCode(id, code);
-    } catch (error) {
-      console.log('Error in AirplaneService: updateAirplaneCode:', error);
-      throw error;
-    }
+    return await this.airplaneRepository.updateAirplaneCode(id, code);
   }
 
   async updateAirplaneCapacity(id: string, capacity: number): Promise<IAirplane> {
-    try {
-      return await this.airplaneRepository.updateAirplaneCapacity(id, capacity);
-    } catch (error) {
-      console.log('Error in AirplaneService: updateAirplaneCapacity:', error);
-      throw error;
-    }
+    return await this.airplaneRepository.updateAirplaneCapacity(id, capacity);
   }
 
   async deleteAirplane(id: string): Promise<void> {
-    try {
-      return await this.airplaneRepository.deleteAirplane(id);
-    } catch (error) {
-      console.log('Error in AirplaneService: deleteAirplane:', error);
-      throw error;
-    }
+    return await this.airplaneRepository.deleteAirplane(id);
   }
 }

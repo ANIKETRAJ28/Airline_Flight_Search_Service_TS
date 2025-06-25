@@ -1,6 +1,7 @@
 import { PoolClient } from 'pg';
 import { ICountry, ICountryRequest } from '../interface/countries.interface';
 import { getPool } from '../util/dbPool.util';
+import { ApiError } from '../util/api.util';
 
 export class CountryRepository {
   private pool = getPool();
@@ -14,9 +15,6 @@ export class CountryRepository {
       const result = await client.query(query);
       const countries: ICountry[] = result.rows;
       return countries;
-    } catch (error) {
-      console.log('Error in CountryRepo: getAllCountries:', error);
-      throw error;
     } finally {
       await client.release();
     }
@@ -27,14 +25,11 @@ export class CountryRepository {
     try {
       const query = 'SELECT * FROM countries WHERE id = $1';
       const result = await client.query(query, [id]);
-      const country: ICountry | null = result.rows[0];
-      if (country === null) {
-        throw new Error(`Country with id ${id} not found`);
+      const country: ICountry | undefined = result.rows[0];
+      if (country === undefined) {
+        throw new ApiError(404, `Country with id ${id} not found`);
       }
       return country;
-    } catch (error) {
-      console.log('Error in CountryRepo: getCountryById:', error);
-      throw error;
     } finally {
       await client.release();
     }
@@ -44,16 +39,12 @@ export class CountryRepository {
     const client: PoolClient = await this.pool.connect();
     try {
       const query = 'SELECT * FROM countries WHERE name = $1';
-
       const result = await client.query(query, [name]);
-      const country: ICountry | null = result.rows[0];
-      if (country === null) {
-        throw new Error(`Country with name ${name} not found`);
+      const country: ICountry | undefined = result.rows[0];
+      if (country === undefined) {
+        throw new ApiError(404, `Country with name ${name} not found`);
       }
       return country;
-    } catch (error) {
-      console.log('Error in CountryRepo: getCountryByName:', error);
-      throw error;
     } finally {
       await client.release();
     }
@@ -64,14 +55,11 @@ export class CountryRepository {
     try {
       const query = 'SELECT * FROM countries WHERE code = $1';
       const result = await client.query(query, [code]);
-      const country: ICountry | null = result.rows[0];
-      if (country === null) {
-        throw new Error(`Country with code ${code} not found`);
+      const country: ICountry | undefined = result.rows[0];
+      if (country === undefined) {
+        throw new ApiError(404, `Country with code ${code} not found`);
       }
       return country;
-    } catch (error) {
-      console.log('Error in CountryRepo: getCountryByCode:', error);
-      throw error;
     } finally {
       await client.release();
     }
@@ -84,9 +72,6 @@ export class CountryRepository {
       const result = await client.query(query, [country.name, country.code]);
       const newCountry: ICountry = result.rows[0];
       return newCountry;
-    } catch (error) {
-      console.log('Error in CountryRepo: createCountry:', error);
-      throw error;
     } finally {
       await client.release();
     }
@@ -97,14 +82,11 @@ export class CountryRepository {
     try {
       const query = 'UPDATE countries SET name = $1 WHERE id = $2 RETURNING *';
       const result = await client.query(query, [name, id]);
-      const updatedCountry: ICountry | null = result.rows[0];
-      if (updatedCountry === null) {
-        throw new Error(`Country with id ${id} not found`);
+      const updatedCountry: ICountry | undefined = result.rows[0];
+      if (updatedCountry === undefined) {
+        throw new ApiError(404, `Country with id ${id} not found`);
       }
       return updatedCountry;
-    } catch (error) {
-      console.log('Error in CountryRepo: updateCountryName:', error);
-      throw error;
     } finally {
       await client.release();
     }
@@ -115,14 +97,11 @@ export class CountryRepository {
     try {
       const query = 'UPDATE countries SET code = $1 WHERE id = $2 RETURNING *';
       const result = await client.query(query, [code, id]);
-      const updatedCountry: ICountry | null = result.rows[0];
-      if (updatedCountry === null) {
-        throw new Error(`Country with id ${id} not found`);
+      const updatedCountry: ICountry | undefined = result.rows[0];
+      if (updatedCountry === undefined) {
+        throw new ApiError(404, `Country with id ${id} not found`);
       }
       return updatedCountry;
-    } catch (error) {
-      console.log('Error in CountryRepo: updateCountryCode:', error);
-      throw error;
     } finally {
       await client.release();
     }
@@ -133,10 +112,6 @@ export class CountryRepository {
     try {
       const query = 'DELETE FROM countries WHERE id = $1';
       await client.query(query, [id]);
-      return;
-    } catch (error) {
-      console.log('Error in CountryRepo: deleteCountry:', error);
-      throw error;
     } finally {
       await client.release();
     }

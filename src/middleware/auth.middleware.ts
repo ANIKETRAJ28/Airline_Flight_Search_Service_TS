@@ -1,54 +1,47 @@
 import jwt from 'jsonwebtoken';
-
 import { NextFunction, Request, Response } from 'express';
+import { ApiError } from '../util/api.util';
+import { errorHandler } from '../util/apiHandler.util';
 
 export function jwtMiddleware(req: Request, res: Response, next: NextFunction): void {
   try {
     const jwtCookie = req.cookies['JWT'];
     if (!jwtCookie) {
-      res.status(501).json({ message: 'unauthorized' });
-      return;
+      throw new ApiError(501, 'unauthorized');
     }
     const decodedToken = jwt.decode(jwtCookie);
     if (!decodedToken || typeof decodedToken === 'string' || !decodedToken.exp) {
-      res.clearCookie('JWT');
-      res.status(501).json({ message: 'unauthorized' });
-      return;
+      throw new ApiError(501, 'unauthorized');
     }
     if (decodedToken.exp * 1000 < Date.now()) {
-      res.clearCookie('JWT');
-      res.status(501).json({ message: 'unauthorized' });
+      throw new ApiError(501, 'unauthorized');
     }
-    req.id = decodedToken.id;
+    req.user_id = decodedToken.id;
     req.email = decodedToken.email;
     req.user_role = decodedToken.user_role;
     next();
   } catch (error) {
-    console.error('Error in jwtMiddleware:', error);
-    res.status(501).json({ message: 'unauthorized' });
+    res.clearCookie('JWT');
+    errorHandler(error, res);
   }
 }
 
 export function checkSuperAdminRole(req: Request, res: Response, next: NextFunction): void {
   if (!req.user_role) {
-    res.status(403).json({ message: 'Forbidden' });
-    return;
+    throw new ApiError(403, 'Forbidden');
   }
   if (req.user_role !== 'superadmin') {
-    res.status(403).json({ message: 'Forbidden' });
-    return;
+    throw new ApiError(403, 'Forbidden');
   }
   next();
 }
 
 export function checkAdminRole(req: Request, res: Response, next: NextFunction): void {
   if (!req.user_role) {
-    res.status(403).json({ message: 'Forbidden' });
-    return;
+    throw new ApiError(403, 'Forbidden');
   }
   if (!req.user_role.includes('admin')) {
-    res.status(403).json({ message: 'Forbidden' });
-    return;
+    throw new ApiError(403, 'Forbidden');
   }
   next();
 }

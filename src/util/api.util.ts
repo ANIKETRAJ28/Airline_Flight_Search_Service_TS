@@ -3,7 +3,7 @@ export class ApiResponse {
   private data: any;
   public message: string;
   private success: boolean;
-  public statusCode: number;
+  private statusCode: number;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   constructor(message: string = 'Success', data: any = null, statusCode: number = 200) {
@@ -13,11 +13,16 @@ export class ApiResponse {
     this.success = statusCode >= 200 && statusCode < 300;
   }
 
+  getStatusCode(): number {
+    return this.statusCode;
+  }
+
   toJSON(): object {
     return {
       success: this.success,
       message: this.message,
       data: this.data,
+      statusCode: this.statusCode,
     };
   }
 }
@@ -49,12 +54,17 @@ export class ApiError extends Error {
     }
   }
 
+  getStatusCode(): number {
+    return this.statusCode;
+  }
+
   toJSON(): object {
     return {
       success: false,
       message: this.message,
       errors: this.errors,
       data: this.data,
+      statusCode: this.statusCode,
     };
   }
 }

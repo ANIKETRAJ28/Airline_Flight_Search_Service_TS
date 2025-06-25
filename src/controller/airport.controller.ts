@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
 
 import { AirportService } from '../service/airport.service';
+import { apiHandler, errorHandler } from '../util/apiHandler.util';
+import { ApiError } from '../util/api.util';
 
 export class AirportController {
   private airportService: AirportService;
@@ -12,10 +14,9 @@ export class AirportController {
   getAllAirports = async (_req: Request, res: Response): Promise<void> => {
     try {
       const airports = await this.airportService.getAllAirports();
-      res.status(200).json(airports);
+      apiHandler(res, 200, 'All airports fetched successfully', airports);
     } catch (error) {
-      console.error('Error in AirportController: getAllAirports:', error);
-      res.status(500).json({ message: 'Internal server error' });
+      errorHandler(error, res);
     }
   };
 
@@ -23,14 +24,12 @@ export class AirportController {
     try {
       const { id } = req.params;
       if (!id) {
-        res.status(400).json({ message: 'Airport ID is required' });
-        return;
+        throw new ApiError(400, 'Airport ID is required');
       }
       const airport = await this.airportService.getAirportById(id);
-      res.status(200).json(airport);
+      apiHandler(res, 200, 'Airport fetched successfully', airport);
     } catch (error) {
-      console.error('Error in AirportController: getAirportById:', error);
-      res.status(500).json({ message: 'Internal server error' });
+      errorHandler(error, res);
     }
   };
 
@@ -38,14 +37,12 @@ export class AirportController {
     try {
       const { code } = req.params;
       if (!code) {
-        res.status(400).json({ message: 'Airport code is required' });
-        return;
+        throw new ApiError(400, 'Airport code is required');
       }
       const airport = await this.airportService.getAirportByCode(code);
-      res.status(200).json(airport);
+      apiHandler(res, 200, 'Airport fetched successfully', airport);
     } catch (error) {
-      console.error('Error in AirportController: getAirportByCode:', error);
-      res.status(500).json({ message: 'Internal server error' });
+      errorHandler(error, res);
     }
   };
 
@@ -53,14 +50,12 @@ export class AirportController {
     try {
       const { id } = req.params;
       if (!id) {
-        res.status(400).json({ message: 'City ID is required' });
-        return;
+        throw new ApiError(400, 'City ID is required');
       }
       const airports = await this.airportService.getAllAirportsOfCityByCityId(id);
-      res.status(200).json(airports);
+      apiHandler(res, 200, 'Airports of city fetched successfully', airports);
     } catch (error) {
-      console.error('Error in AirportController: getAllAirportsOfCityByCityId:', error);
-      res.status(500).json({ message: 'Internal server error' });
+      errorHandler(error, res);
     }
   };
 
@@ -68,14 +63,12 @@ export class AirportController {
     try {
       const { name } = req.params;
       if (!name) {
-        res.status(400).json({ message: 'City name is required' });
-        return;
+        throw new ApiError(400, 'City name is required');
       }
       const airports = await this.airportService.getAllAirportsOfCityByCityName(name);
-      res.status(200).json(airports);
+      apiHandler(res, 200, 'Airports of city fetched successfully', airports);
     } catch (error) {
-      console.error('Error in AirportController: getAllAirportsOfCityByCityName:', error);
-      res.status(500).json({ message: 'Internal server error' });
+      errorHandler(error, res);
     }
   };
 
@@ -83,18 +76,16 @@ export class AirportController {
     try {
       const { name, code, city_id }: { name: string; code: string; city_id: string } = req.body;
       if (!name || !code || !city_id) {
-        res.status(400).json({ message: 'Airport data is required' });
-        return;
+        throw new ApiError(400, 'Airport name, code, and city ID are required');
       }
       const newAirport = await this.airportService.createAirport({
         name,
         code,
         city_id,
       });
-      res.status(201).json(newAirport);
+      apiHandler(res, 201, 'Airport created successfully', newAirport);
     } catch (error) {
-      console.error('Error in AirportController: createAirport:', error);
-      res.status(500).json({ message: 'Internal server error' });
+      errorHandler(error, res);
     }
   };
 
@@ -103,14 +94,12 @@ export class AirportController {
       const { id } = req.params;
       const { name } = req.body;
       if (!id || !name) {
-        res.status(400).json({ message: 'Airport ID and name are required' });
-        return;
+        throw new ApiError(400, 'Airport ID and name are required');
       }
       const updatedAirport = await this.airportService.updateAirportName(id, name);
-      res.status(200).json(updatedAirport);
+      apiHandler(res, 200, 'Airport name updated successfully', updatedAirport);
     } catch (error) {
-      console.error('Error in AirportController: updateAirportName:', error);
-      res.status(500).json({ message: 'Internal server error' });
+      errorHandler(error, res);
     }
   };
 
@@ -119,14 +108,12 @@ export class AirportController {
       const { id } = req.params;
       const { code } = req.body;
       if (!id || !code) {
-        res.status(400).json({ message: 'Airport ID and code are required' });
-        return;
+        throw new ApiError(400, 'Airport ID and code are required');
       }
       const updatedAirport = await this.airportService.updateAirportCode(id, code);
-      res.status(200).json(updatedAirport);
+      apiHandler(res, 200, 'Airport code updated successfully', updatedAirport);
     } catch (error) {
-      console.error('Error in AirportController: updateAirportCode:', error);
-      res.status(500).json({ message: 'Internal server error' });
+      errorHandler(error, res);
     }
   };
 
@@ -134,14 +121,12 @@ export class AirportController {
     try {
       const { id } = req.params;
       if (!id) {
-        res.status(400).json({ message: 'Airport ID is required' });
-        return;
+        throw new ApiError(400, 'Airport ID is required');
       }
       await this.airportService.deleteAirport(id);
-      res.status(204).send();
+      apiHandler(res, 200, 'Airport deleted successfully');
     } catch (error) {
-      console.error('Error in AirportController: deleteAirport:', error);
-      res.status(500).json({ message: 'Internal server error' });
+      errorHandler(error, res);
     }
   };
 }

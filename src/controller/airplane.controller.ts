@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
 
 import { AirplaneService } from '../service/airplane.service';
+import { apiHandler, errorHandler } from '../util/apiHandler.util';
+import { ApiError } from '../util/api.util';
 
 export class AirplaneController {
   private airplaneService: AirplaneService;
@@ -12,10 +14,9 @@ export class AirplaneController {
   getAllAirplanes = async (_req: Request, res: Response): Promise<void> => {
     try {
       const airplanes = await this.airplaneService.getAllAirplanes();
-      res.status(200).json(airplanes);
+      apiHandler(res, 200, 'All airplanes fetched successfully', airplanes);
     } catch (error) {
-      console.log('Error in AirplaneController: getAllAirplanes:', error);
-      res.status(500).json({ message: 'Internal server error' });
+      errorHandler(error, res);
     }
   };
 
@@ -23,14 +24,12 @@ export class AirplaneController {
     try {
       const { id } = req.params;
       if (!id) {
-        res.status(400).json({ message: 'Airplane ID is required' });
-        return;
+        throw new ApiError(400, 'Airplane ID is required');
       }
       const airplane = await this.airplaneService.getAirplaneById(id);
-      res.status(200).json(airplane);
+      apiHandler(res, 200, 'Airplane fetched successfully', airplane);
     } catch (error) {
-      console.log('Error in AirplaneController: getAirplaneById:', error);
-      res.status(500).json({ message: 'Internal server error' });
+      errorHandler(error, res);
     }
   };
 
@@ -38,14 +37,12 @@ export class AirplaneController {
     try {
       const { code } = req.params;
       if (!code) {
-        res.status(400).json({ message: 'Airplane code is required' });
-        return;
+        throw new ApiError(400, 'Airplane code is required');
       }
       const airplane = await this.airplaneService.getAirplaneByCode(code);
-      res.status(200).json(airplane);
+      apiHandler(res, 200, 'Airplane fetched successfully', airplane);
     } catch (error) {
-      console.log('Error in AirplaneController: getAirplaneByCode:', error);
-      res.status(500).json({ message: 'Internal server error' });
+      errorHandler(error, res);
     }
   };
 
@@ -53,14 +50,12 @@ export class AirplaneController {
     try {
       const { name } = req.params;
       if (!name) {
-        res.status(400).json({ message: 'Airplane name is required' });
-        return;
+        throw new ApiError(400, 'Airplane name is required');
       }
       const airplane = await this.airplaneService.getAirplaneByName(name);
-      res.status(200).json(airplane);
+      apiHandler(res, 200, 'Airplane fetched successfully', airplane);
     } catch (error) {
-      console.log('Error in AirplaneController: getAirplaneByName:', error);
-      res.status(500).json({ message: 'Internal server error' });
+      errorHandler(error, res);
     }
   };
 
@@ -68,14 +63,12 @@ export class AirplaneController {
     try {
       const { name, code, capacity }: { name: string; code: string; capacity: number } = req.body;
       if (!name || !code || !capacity) {
-        res.status(400).json({ message: 'Airplane data is required' });
-        return;
+        throw new ApiError(400, 'Airplane name, code, and capacity are required');
       }
       const newAirplane = await this.airplaneService.createAirplane({ name, code, capacity });
-      res.status(201).json(newAirplane);
+      apiHandler(res, 201, 'Airplane created successfully', newAirplane);
     } catch (error) {
-      console.log('Error in AirplaneController: createAirplane:', error);
-      res.status(500).json({ message: 'Internal server error' });
+      errorHandler(error, res);
     }
   };
 
@@ -84,14 +77,12 @@ export class AirplaneController {
       const { id } = req.params;
       const { name } = req.body;
       if (!id || !name) {
-        res.status(400).json({ message: 'Airplane ID and name are required' });
-        return;
+        throw new ApiError(400, 'Airplane ID and name are required');
       }
       const updatedAirplane = await this.airplaneService.updateAirplaneName(id, name);
-      res.status(200).json(updatedAirplane);
+      apiHandler(res, 200, 'Airplane name updated successfully', updatedAirplane);
     } catch (error) {
-      console.log('Error in AirplaneController: updateAirplaneName:', error);
-      res.status(500).json({ message: 'Internal server error' });
+      errorHandler(error, res);
     }
   };
 
@@ -100,14 +91,12 @@ export class AirplaneController {
       const { id } = req.params;
       const { code } = req.body;
       if (!id || !code) {
-        res.status(400).json({ message: 'Airplane ID and code are required' });
-        return;
+        throw new ApiError(400, 'Airplane ID and code are required');
       }
       const updatedAirplane = await this.airplaneService.updateAirplaneCode(id, code);
-      res.status(200).json(updatedAirplane);
+      apiHandler(res, 200, 'Airplane code updated successfully', updatedAirplane);
     } catch (error) {
-      console.log('Error in AirplaneController: updateAirplaneCode:', error);
-      res.status(500).json({ message: 'Internal server error' });
+      errorHandler(error, res);
     }
   };
 
@@ -116,14 +105,12 @@ export class AirplaneController {
       const { id } = req.params;
       const { capacity } = req.body;
       if (!id || !capacity) {
-        res.status(400).json({ message: 'Airplane ID and capacity are required' });
-        return;
+        throw new ApiError(400, 'Airplane ID and capacity are required');
       }
       const updatedAirplane = await this.airplaneService.updateAirplaneCapacity(id, capacity);
-      res.status(200).json(updatedAirplane);
+      apiHandler(res, 200, 'Airplane capacity updated successfully', updatedAirplane);
     } catch (error) {
-      console.log('Error in AirplaneController: updateAirplaneCapacity:', error);
-      res.status(500).json({ message: 'Internal server error' });
+      errorHandler(error, res);
     }
   };
 
@@ -131,14 +118,12 @@ export class AirplaneController {
     try {
       const { id } = req.params;
       if (!id) {
-        res.status(400).json({ message: 'Airplane ID is required' });
-        return;
+        throw new ApiError(400, 'Airplane ID is required');
       }
       await this.airplaneService.deleteAirplane(id);
-      res.status(204).send();
+      apiHandler(res, 200, 'Airplane deleted successfully');
     } catch (error) {
-      console.log('Error in AirplaneController: deleteAirplane:', error);
-      res.status(500).json({ message: 'Internal server error' });
+      errorHandler(error, res);
     }
   };
 }

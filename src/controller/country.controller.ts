@@ -1,7 +1,8 @@
 import { Request, Response } from 'express';
-
 import { CountryService } from '../service/country.service';
 import { ICountry } from '../interface/countries.interface';
+import { apiHandler, errorHandler } from '../util/apiHandler.util';
+import { ApiError } from '../util/api.util';
 
 export class CountryController {
   private countryService: CountryService;
@@ -13,10 +14,9 @@ export class CountryController {
   getAllCountries = async (_req: Request, res: Response): Promise<void> => {
     try {
       const countries: ICountry[] = await this.countryService.getAllCountries();
-      res.status(200).json(countries);
+      apiHandler(res, 200, 'All countries fetched successfully', countries);
     } catch (error) {
-      console.error('Error in CountryController: getAllCountries:', error);
-      res.status(500).json({ message: 'Internal server error' });
+      errorHandler(error, res);
     }
   };
 
@@ -24,14 +24,12 @@ export class CountryController {
     try {
       const { id } = req.params;
       if (!id) {
-        res.status(400).json({ message: 'Country ID is required' });
-        return;
+        throw new ApiError(400, 'Country ID is required');
       }
       const country: ICountry = await this.countryService.getCountryById(id);
-      res.status(200).json(country);
+      apiHandler(res, 200, 'Country fetched successfully', country);
     } catch (error) {
-      console.error('Error in CountryController: getCountryById:', error);
-      res.status(500).json({ message: 'Internal server error' });
+      errorHandler(error, res);
     }
   };
 
@@ -39,14 +37,12 @@ export class CountryController {
     try {
       const { name } = req.params;
       if (!name) {
-        res.status(400).json({ message: 'Country name is required' });
-        return;
+        throw new ApiError(400, 'Country name is required');
       }
       const country: ICountry = await this.countryService.getCountryByName(name);
-      res.status(200).json(country);
+      apiHandler(res, 200, 'Country fetched successfully', country);
     } catch (error) {
-      console.error('Error in CountryController: getCountryByName:', error);
-      res.status(500).json({ message: 'Internal server error' });
+      errorHandler(error, res);
     }
   };
 
@@ -54,14 +50,12 @@ export class CountryController {
     try {
       const { code } = req.params;
       if (!code) {
-        res.status(400).json({ message: 'Country code is required' });
-        return;
+        throw new ApiError(400, 'Country code is required');
       }
       const country: ICountry = await this.countryService.getCountryByCode(code);
-      res.status(200).json(country);
+      apiHandler(res, 200, 'Country fetched successfully', country);
     } catch (error) {
-      console.error('Error in CountryController: getCountryByCode:', error);
-      res.status(500).json({ message: 'Internal server error' });
+      errorHandler(error, res);
     }
   };
 
@@ -69,14 +63,12 @@ export class CountryController {
     try {
       const { name, code } = req.body;
       if (!name || !code) {
-        res.status(400).json({ message: 'Country name and code are required' });
-        return;
+        throw new ApiError(400, 'Country name and code are required');
       }
       const country: ICountry = await this.countryService.createCountry({ name, code });
-      res.status(201).json(country);
+      apiHandler(res, 201, 'Country created successfully', country);
     } catch (error) {
-      console.error('Error in CountryController: createCountry:', error);
-      res.status(500).json({ message: 'Internal server error' });
+      errorHandler(error, res);
     }
   };
 
@@ -84,19 +76,16 @@ export class CountryController {
     try {
       const { id } = req.params;
       if (!id) {
-        res.status(400).json({ message: 'Country ID is required' });
-        return;
+        throw new ApiError(400, 'Country ID is required');
       }
       const { name } = req.body;
       if (!name) {
-        res.status(400).json({ message: 'Country name is required' });
-        return;
+        throw new ApiError(400, 'Country name is required');
       }
       const updatedCountry: ICountry = await this.countryService.updateCountryName(id, name);
-      res.status(200).json(updatedCountry);
+      apiHandler(res, 200, 'Country name updated successfully', updatedCountry);
     } catch (error) {
-      console.log('Error in CountryController: updateCountryName:', error);
-      res.status(500).json({ message: 'Internal server error' });
+      errorHandler(error, res);
     }
   };
 
@@ -104,19 +93,16 @@ export class CountryController {
     try {
       const { id } = req.params;
       if (!id) {
-        res.status(400).json({ message: 'Country ID is required' });
-        return;
+        throw new ApiError(400, 'Country ID is required');
       }
       const { code } = req.body;
       if (!code) {
-        res.status(400).json({ message: 'Country code is required' });
-        return;
+        throw new ApiError(400, 'Country code is required');
       }
       const updatedCountry: ICountry = await this.countryService.updateCountryCode(id, code);
-      res.status(200).json(updatedCountry);
+      apiHandler(res, 200, 'Country code updated successfully', updatedCountry);
     } catch (error) {
-      console.log('Error in CountryController: updateCountryCode:', error);
-      res.status(500).json({ message: 'Internal server error' });
+      errorHandler(error, res);
     }
   };
 
@@ -124,14 +110,12 @@ export class CountryController {
     try {
       const { id } = req.params;
       if (!id) {
-        res.status(400).json({ message: 'Country ID is required' });
-        return;
+        throw new ApiError(400, 'Country ID is required');
       }
       await this.countryService.deleteCountry(id);
-      res.status(204).send();
+      apiHandler(res, 200, 'Country deleted successfully');
     } catch (error) {
-      console.log('Error in CountryController: deleteCountry:', error);
-      res.status(500).json({ message: 'Internal server error' });
+      errorHandler(error, res);
     }
   };
 }

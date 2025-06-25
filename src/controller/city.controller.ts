@@ -1,5 +1,7 @@
 import { Request, Response } from 'express';
 import { CityService } from '../service/city.service';
+import { apiHandler, errorHandler } from '../util/apiHandler.util';
+import { ApiError } from '../util/api.util';
 
 export class CityController {
   private cityService: CityService;
@@ -11,10 +13,9 @@ export class CityController {
   getAllCities = async (_req: Request, res: Response): Promise<void> => {
     try {
       const cities = await this.cityService.getAllCities();
-      res.status(200).json(cities);
+      apiHandler(res, 200, 'All cities fetched successfully', cities);
     } catch (error) {
-      console.error('Error in CityController: getAllCities:', error);
-      res.status(500).json({ message: 'Internal server error' });
+      errorHandler(error, res);
     }
   };
 
@@ -22,14 +23,12 @@ export class CityController {
     try {
       const { id } = req.params;
       if (!id) {
-        res.status(400).json({ message: 'City ID is required' });
-        return;
+        throw new ApiError(400, 'City ID is required');
       }
       const city = await this.cityService.getCityById(id);
-      res.status(200).json(city);
+      apiHandler(res, 200, 'City fetched successfully', city);
     } catch (error) {
-      console.error('Error in CityController: getCityById:', error);
-      res.status(500).json({ message: 'Internal server error' });
+      errorHandler(error, res);
     }
   };
 
@@ -37,14 +36,12 @@ export class CityController {
     try {
       const { name } = req.params;
       if (!name) {
-        res.status(400).json({ message: 'City name is required' });
-        return;
+        throw new ApiError(400, 'City name is required');
       }
       const city = await this.cityService.getCityByName(name);
-      res.status(200).json(city);
+      apiHandler(res, 200, 'City fetched successfully', city);
     } catch (error) {
-      console.error('Error in CityController: getCityByName:', error);
-      res.status(500).json({ message: 'Internal server error' });
+      errorHandler(error, res);
     }
   };
 
@@ -52,14 +49,12 @@ export class CityController {
     try {
       const { name, country_id }: { name: string; country_id: string } = req.body;
       if (!name || !country_id) {
-        res.status(400).json({ message: 'City data is required' });
-        return;
+        throw new ApiError(400, 'City name and country ID are required');
       }
       const newCity = await this.cityService.createCity({ name, country_id });
-      res.status(201).json(newCity);
+      apiHandler(res, 201, 'City created successfully', newCity);
     } catch (error) {
-      console.error('Error in CityController: createCity:', error);
-      res.status(500).json({ message: 'Internal server error' });
+      errorHandler(error, res);
     }
   };
 
@@ -68,14 +63,12 @@ export class CityController {
       const { id } = req.params;
       const { name } = req.body;
       if (!id || !name) {
-        res.status(400).json({ message: 'City ID and name are required' });
-        return;
+        throw new ApiError(400, 'City ID and name are required');
       }
       const updatedCity = await this.cityService.updateCityName(id, name);
-      res.status(200).json(updatedCity);
+      apiHandler(res, 200, 'City name updated successfully', updatedCity);
     } catch (error) {
-      console.error('Error in CityController: updateCityName:', error);
-      res.status(500).json({ message: 'Internal server error' });
+      errorHandler(error, res);
     }
   };
 
@@ -83,14 +76,12 @@ export class CityController {
     try {
       const { id } = req.params;
       if (!id) {
-        res.status(400).json({ message: 'City ID is required' });
-        return;
+        throw new ApiError(400, 'City ID is required');
       }
       await this.cityService.deleteCity(id);
-      res.status(204).send();
+      apiHandler(res, 200, 'City deleted successfully');
     } catch (error) {
-      console.error('Error in CityController: deleteCity:', error);
-      res.status(500).json({ message: 'Internal server error' });
+      errorHandler(error, res);
     }
   };
 }

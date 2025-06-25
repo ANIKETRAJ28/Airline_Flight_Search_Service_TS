@@ -9,83 +9,38 @@ export class AirportService {
   }
 
   async createAirport(airport: IAirportRequest): Promise<IAirportWithCityAndCountry> {
-    try {
-      return await this.airportRepository.createAirport(airport);
-    } catch (error) {
-      console.log('Error in AirportService: createAirport:', error);
-      throw error;
-    }
+    return await this.airportRepository.createAirport(airport);
   }
 
   async getAllAirports(): Promise<IAirportWithCityAndCountry[]> {
-    try {
-      return await this.airportRepository.getAllAirports();
-    } catch (error) {
-      console.log('Error in AirportService: getAllAirports:', error);
-      throw error;
-    }
+    return await this.airportRepository.getAllAirports();
   }
 
   async getAirportById(id: string): Promise<IAirportWithCityAndCountry> {
-    try {
-      return await this.airportRepository.getAirportById(id);
-    } catch (error) {
-      console.log('Error in AirportService: getAirportById:', error);
-      throw error;
-    }
+    return await this.airportRepository.getAirportById(id);
   }
 
   async getAirportByCode(code: string): Promise<IAirportWithCityAndCountry> {
-    try {
-      return await this.airportRepository.getAirportByCode(code);
-    } catch (error) {
-      console.log('Error in AirportService: getAirportByCode:', error);
-      throw error;
-    }
+    return await this.airportRepository.getAirportByCode(code);
   }
 
   async getAllAirportsOfCityByCityId(cityId: string): Promise<IAirportWithCityAndCountry[]> {
-    try {
-      return await this.airportRepository.getAllAirportsOfCityByCityId(cityId);
-    } catch (error) {
-      console.log('Error in AirportService: getAllAirportsOfCityByCityId:', error);
-      throw error;
-    }
+    return await this.airportRepository.getAllAirportsOfCityByCityId(cityId);
   }
 
   async getAllAirportsOfCityByCityName(cityName: string): Promise<IAirportWithCityAndCountry[]> {
-    try {
-      return await this.airportRepository.getAllAirportsOfCityByCityName(cityName);
-    } catch (error) {
-      console.log('Error in AirportService: getAllAirportsOfCityByCityName:', error);
-      throw error;
-    }
+    return await this.airportRepository.getAllAirportsOfCityByCityName(cityName);
   }
 
   async updateAirportName(id: string, name: string): Promise<IAirportWithCityAndCountry> {
-    try {
-      return await this.airportRepository.updateAirportName(id, name);
-    } catch (error) {
-      console.log('Error in AirportService: updateAirportName:', error);
-      throw error;
-    }
+    return await this.airportRepository.updateAirportName(id, name);
   }
 
   async updateAirportCode(id: string, code: string): Promise<IAirportWithCityAndCountry> {
-    try {
-      return await this.airportRepository.updateAirportCode(id, code);
-    } catch (error) {
-      console.log('Error in AirportService: updateAirportCode:', error);
-      throw error;
-    }
+    return await this.airportRepository.updateAirportCode(id, code);
   }
 
   async deleteAirport(id: string): Promise<void> {
-    try {
-      return await this.airportRepository.deleteAirport(id);
-    } catch (error) {
-      console.log('Error in AirportService: deleteAirport:', error);
-      throw error;
-    }
+    return await this.airportRepository.deleteAirport(id);
   }
 }

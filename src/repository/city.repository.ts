@@ -2,6 +2,7 @@ import { PoolClient } from 'pg';
 
 import { ICityRequest, ICityWithCountry } from '../interface/cities.interface';
 import { getPool } from '../util/dbPool.util';
+import { ApiError } from '../util/api.util';
 
 export class CityRepository {
   private pool = getPool();
@@ -27,9 +28,6 @@ export class CityRepository {
         updated_at: row.updated_at,
       }));
       return cities;
-    } catch (error) {
-      console.log('Error in CityRepo: getAllCitiesWithCountry:', error);
-      throw error;
     } finally {
       await client.release();
     }
@@ -41,8 +39,8 @@ export class CityRepository {
       const query = `SELECT c.*, co.name AS country_name, co.code AS country_code, co.created_at AS country_created_at, co.updated_at AS country_updated_at FROM cities c INNER JOIN countries co ON c.country_id = co.id WHERE c.id = $1`;
       const result = await client.query(query, [id]);
       const city = result.rows[0];
-      if (city === null) {
-        throw new Error(`City with id ${id} not found`);
+      if (city === undefined) {
+        throw new ApiError(404, `City with id ${id} not found`);
       }
       const cityResponse: ICityWithCountry = {
         id: city.id,
@@ -58,9 +56,6 @@ export class CityRepository {
         updated_at: city.updated_at,
       };
       return cityResponse;
-    } catch (error) {
-      console.log('Error in CityRepo: getCityById:', error);
-      throw error;
     } finally {
       await client.release();
     }
@@ -72,8 +67,8 @@ export class CityRepository {
       const query = `SELECT c.*, co.name AS country_name, co.code AS country_code, co.created_at AS country_created_at, co.updated_at AS country_updated_at FROM cities c INNER JOIN countries co ON c.country_id = co.id WHERE c.name = $1`;
       const result = await client.query(query, [name]);
       const city = result.rows[0];
-      if (city === null) {
-        throw new Error(`City with id ${name} not found`);
+      if (city === undefined) {
+        throw new ApiError(404, `City with name ${name} not found`);
       }
       const cityResponse: ICityWithCountry = {
         id: city.id,
@@ -89,9 +84,6 @@ export class CityRepository {
         updated_at: city.updated_at,
       };
       return cityResponse;
-    } catch (error) {
-      console.log('Error in CityRepo: getCityByNameWithCountry:', error);
-      throw error;
     } finally {
       await client.release();
     }
@@ -103,9 +95,6 @@ export class CityRepository {
       const query = `INSERT INTO cities (name, country_id) VALUES ($1, $2)`;
       await client.query(query, [city.name, city.country_id]);
       return this.getCityByName(city.name);
-    } catch (error) {
-      console.log('Error in CityRepo: createCity:', error);
-      throw error;
     } finally {
       await client.release();
     }
@@ -117,9 +106,6 @@ export class CityRepository {
       const query = 'UPDATE cities SET name = $1 WHERE id = $2';
       await client.query(query, [name, id]);
       return this.getCityById(id);
-    } catch (error) {
-      console.log('Error in CityRepo: updateCityName:', error);
-      throw error;
     } finally {
       await client.release();
     }
@@ -130,9 +116,6 @@ export class CityRepository {
     try {
       const query = 'DELETE FROM cities WHERE id = $1';
       await client.query(query, [id]);
-    } catch (error) {
-      console.log('Error in CityRepo: deleteCity:', error);
-      throw error;
     } finally {
       await client.release();
     }
@@ -148,8 +131,8 @@ export class CityRepository {
                      WHERE a.id = $1`;
       const result = await client.query(query, [airportId]);
       const city = result.rows[0];
-      if (city === null) {
-        throw new Error(`City with airport id ${airportId} not found`);
+      if (city === undefined) {
+        throw new ApiError(404, `City for airport with id ${airportId} not found`);
       }
       const cityResponse: ICityWithCountry = {
         id: city.id,
@@ -165,9 +148,6 @@ export class CityRepository {
         updated_at: city.updated_at,
       };
       return cityResponse;
-    } catch (error) {
-      console.log('Error in CityRepo: getCityByAirportId:', error);
-      throw error;
     } finally {
       await client.release();
     }

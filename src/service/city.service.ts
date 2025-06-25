@@ -9,56 +9,26 @@ export class CityService {
   }
 
   async getAllCities(): Promise<ICityWithCountry[]> {
-    try {
-      return await this.cityRepository.getAllCities();
-    } catch (error) {
-      console.log('Error in CityService: getAllCities:', error);
-      throw error;
-    }
+    return await this.cityRepository.getAllCities();
   }
 
   async getCityById(id: string): Promise<ICityWithCountry> {
-    try {
-      return await this.cityRepository.getCityById(id);
-    } catch (error) {
-      console.log('Error in CityService: getCityById:', error);
-      throw error;
-    }
+    return await this.cityRepository.getCityById(id);
   }
 
   async getCityByName(name: string): Promise<ICityWithCountry> {
-    try {
-      return await this.cityRepository.getCityByName(name);
-    } catch (error) {
-      console.log('Error in CityService: getCityByName:', error);
-      throw error;
-    }
+    return await this.cityRepository.getCityByName(name);
   }
 
   async createCity(city: ICityRequest): Promise<ICityWithCountry> {
-    try {
-      return await this.cityRepository.createCity(city);
-    } catch (error) {
-      console.log('Error in CityService: createCity:', error);
-      throw error;
-    }
+    return await this.cityRepository.createCity(city);
   }
 
   async updateCityName(id: string, name: string): Promise<ICityWithCountry> {
-    try {
-      return await this.cityRepository.updateCityName(id, name);
-    } catch (error) {
-      console.log('Error in CityService: updateCityName:', error);
-      throw error;
-    }
+    return await this.cityRepository.updateCityName(id, name);
   }
 
   async deleteCity(id: string): Promise<void> {
-    try {
-      return await this.cityRepository.deleteCity(id);
-    } catch (error) {
-      console.log('Error in CityService: deleteCity:', error);
-      throw error;
-    }
+    return await this.cityRepository.deleteCity(id);
   }
 }
