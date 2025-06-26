@@ -1,6 +1,7 @@
 import { Pool, PoolClient } from 'pg';
 import { getPool } from './dbPool.util';
 import { IFlightWithDetails } from '../interface/flights.interface';
+import { ApiError } from './api.util';
 
 export async function queryFlightWithDetailById(id: string): Promise<IFlightWithDetails> {
   const pool: Pool = getPool();
@@ -25,10 +26,10 @@ export async function queryFlightWithDetailById(id: string): Promise<IFlightWith
                     WHERE f.id = $1`;
     const result = await client.query(query, [id]);
     const flight = result.rows[0];
-    if (flight === null) {
-      throw new Error(`Flight with id ${id} not found`);
+    if (flight === undefined) {
+      throw new ApiError(404, `Flight with id ${id} not found`);
     }
-    return {
+    const f = {
       id: flight.id,
       flight_number: flight.flight_number,
       departure_time: flight.departure_time,
@@ -87,9 +88,7 @@ export async function queryFlightWithDetailById(id: string): Promise<IFlightWith
       },
       class_window_price: flight.class_window_price,
     };
-  } catch (error) {
-    console.log('Issue in flightQuery util');
-    throw error;
+    return f;
   } finally {
     client.release();
   }

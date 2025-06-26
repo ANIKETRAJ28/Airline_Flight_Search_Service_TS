@@ -27,21 +27,29 @@ export function jwtMiddleware(req: Request, res: Response, next: NextFunction): 
 }
 
 export function checkSuperAdminRole(req: Request, res: Response, next: NextFunction): void {
-  if (!req.user_role) {
-    throw new ApiError(403, 'Forbidden');
+  try {
+    if (!req.user_role) {
+      throw new ApiError(403, 'Forbidden');
+    }
+    if (req.user_role !== 'superadmin') {
+      throw new ApiError(403, 'Forbidden');
+    }
+    next();
+  } catch (error) {
+    errorHandler(error, res);
   }
-  if (req.user_role !== 'superadmin') {
-    throw new ApiError(403, 'Forbidden');
-  }
-  next();
 }
 
 export function checkAdminRole(req: Request, res: Response, next: NextFunction): void {
-  if (!req.user_role) {
-    throw new ApiError(403, 'Forbidden');
+  try {
+    if (!req.user_role) {
+      throw new ApiError(403, 'Forbidden');
+    }
+    if (!req.user_role.includes('admin')) {
+      throw new ApiError(403, 'Forbidden');
+    }
+    next();
+  } catch (error) {
+    errorHandler(error, res);
   }
-  if (!req.user_role.includes('admin')) {
-    throw new ApiError(403, 'Forbidden');
-  }
-  next();
 }
