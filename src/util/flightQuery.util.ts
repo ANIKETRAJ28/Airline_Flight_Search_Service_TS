@@ -53,6 +53,7 @@ export const classPriceSeat = (
 ): IClassWindowPriceForUser => {
   return {
     business: {
+      total_seats: flight.class_window_price.business.total_seats,
       seats: class_window_price.business.first_window_seats + class_window_price.business.second_window_seats,
       price:
         class_window_price.business.first_window_seats > 0
@@ -62,6 +63,7 @@ export const classPriceSeat = (
             : 0,
     },
     premium: {
+      total_seats: flight.class_window_price.premium.total_seats,
       seats: class_window_price.premium.first_window_seats + class_window_price.premium.second_window_seats,
       price:
         class_window_price.premium.first_window_seats > 0
@@ -71,6 +73,7 @@ export const classPriceSeat = (
             : 0,
     },
     economy: {
+      total_seats: flight.class_window_price.economy.total_seats,
       seats:
         class_window_price.economy.first_window_seats +
         class_window_price.economy.second_window_seats +

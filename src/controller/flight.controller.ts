@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { FlightService } from '../service/flight.service';
-import { IFlightRequest } from '../interface/flights.interface';
+import { IFlightRequestWithoutTotalSeats } from '../interface/flights.interface';
 import { IFlightStatus, IFlightWindow } from '../types/flight.types';
 import { ApiError } from '../util/api.util';
 import { apiHandler, errorHandler } from '../util/apiHandler.util';
@@ -14,11 +14,47 @@ export class FlightController {
 
   createFlight = async (req: Request, res: Response): Promise<void> => {
     try {
-      const flightPayload: IFlightRequest = req.body;
+      const flightPayload: IFlightRequestWithoutTotalSeats = req.body;
       if (!flightPayload) {
         throw new ApiError(400, 'Flight details are required');
       }
-      const flight = await this.flightService.createFlight(flightPayload);
+      if (
+        flightPayload.class_window_price.economy.first_window_seats < 0 ||
+        flightPayload.class_window_price.economy.second_window_seats < 0 ||
+        flightPayload.class_window_price.economy.third_window_seats < 0 ||
+        flightPayload.class_window_price.premium.first_window_seats < 0 ||
+        flightPayload.class_window_price.premium.second_window_seats < 0 ||
+        flightPayload.class_window_price.business.first_window_seats < 0 ||
+        flightPayload.class_window_price.business.second_window_seats < 0
+      ) {
+        throw new ApiError(400, 'Number of seats cannot be negative');
+      }
+      const data = {
+        ...flightPayload,
+        class_window_price: {
+          ...flightPayload.class_window_price,
+          business: {
+            ...flightPayload.class_window_price.business,
+            total_seats:
+              flightPayload.class_window_price.business.first_window_seats +
+              flightPayload.class_window_price.business.second_window_seats,
+          },
+          premium: {
+            ...flightPayload.class_window_price.premium,
+            total_seats:
+              flightPayload.class_window_price.premium.first_window_seats +
+              flightPayload.class_window_price.premium.second_window_seats,
+          },
+          economy: {
+            ...flightPayload.class_window_price.economy,
+            total_seats:
+              flightPayload.class_window_price.economy.first_window_seats +
+              flightPayload.class_window_price.economy.second_window_seats +
+              flightPayload.class_window_price.economy.third_window_seats,
+          },
+        },
+      };
+      const flight = await this.flightService.createFlight(data);
       apiHandler(res, 201, 'Flight created successfully', flight);
     } catch (error) {
       errorHandler(error, res);
@@ -80,6 +116,9 @@ export class FlightController {
       const date = req.params.date as string;
       if (!departureCityId || !arrivalCityId || !date) {
         throw new ApiError(400, 'Departure city ID, arrival city ID, and date are required');
+      }
+      if (departureCityId === arrivalCityId) {
+        throw new ApiError(400, 'Departure city and arrival city cannot be the same');
       }
       const flights = await this.flightService.getFlightsForArrivalAndDepartureCity(
         departureCityId,

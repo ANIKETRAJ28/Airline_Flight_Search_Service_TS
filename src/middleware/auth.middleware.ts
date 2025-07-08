@@ -7,14 +7,14 @@ export function jwtMiddleware(req: Request, res: Response, next: NextFunction): 
   try {
     const jwtCookie = req.cookies['JWT'];
     if (!jwtCookie) {
-      throw new ApiError(501, 'unauthorized');
+      throw new ApiError(501, 'Unauthorized');
     }
     const decodedToken = jwt.decode(jwtCookie);
     if (!decodedToken || typeof decodedToken === 'string' || !decodedToken.exp) {
-      throw new ApiError(501, 'unauthorized');
+      throw new ApiError(501, 'Unauthorized');
     }
     if (decodedToken.exp * 1000 < Date.now()) {
-      throw new ApiError(501, 'unauthorized');
+      throw new ApiError(501, 'Unauthorized');
     }
     req.user_id = decodedToken.id;
     req.email = decodedToken.email;

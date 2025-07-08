@@ -16,8 +16,8 @@ export class CityService {
     return await this.cityRepository.getCityById(id);
   }
 
-  async getCityByName(name: string): Promise<ICityWithCountry> {
-    return await this.cityRepository.getCityByName(name);
+  async searchCities(name: string): Promise<ICityWithCountry[]> {
+    return await this.cityRepository.searchCities(name);
   }
 
   async createCity(city: ICityRequest): Promise<ICityWithCountry> {

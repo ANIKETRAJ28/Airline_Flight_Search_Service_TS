@@ -12,7 +12,7 @@ flightRouter.get('/:id', flightController.getFlightByIdForAdmin);
 flightRouter.get('/flight_id/:id', jwtMiddleware, flightController.getFlighByIdForUser);
 flightRouter.get(
   '/departure_city/:departure_city_id/arrival_city/:arrival_city_id/date/:date',
-  // jwtMiddleware,
+  jwtMiddleware,
   flightController.getFlightsForArrivalAndDepartureCity,
 );
 flightRouter.get('/flight_number/:flight_number', jwtMiddleware, flightController.getFlightByFlightNumber);

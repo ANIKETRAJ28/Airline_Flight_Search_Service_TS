@@ -32,13 +32,13 @@ export class CityController {
     }
   };
 
-  getCityByName = async (req: Request, res: Response): Promise<void> => {
+  searchCities = async (req: Request, res: Response): Promise<void> => {
     try {
-      const { name } = req.params;
-      if (!name) {
+      const { name } = req.query;
+      if (!name || typeof name !== 'string') {
         throw new ApiError(400, 'City name is required');
       }
-      const city = await this.cityService.getCityByName(name);
+      const city = await this.cityService.searchCities(name);
       apiHandler(res, 200, 'City fetched successfully', city);
     } catch (error) {
       errorHandler(error, res);

@@ -4,6 +4,7 @@ import { IAirportWithCityAndCountry } from './airports.interface';
 
 export interface IClassWindowPrice {
   economy: {
+    total_seats: number;
     first_window_seats: number;
     first_window_percentage: number;
     second_window_seats: number;
@@ -12,12 +13,14 @@ export interface IClassWindowPrice {
     third_window_percentage: number;
   };
   premium: {
+    total_seats: number;
     first_window_seats: number;
     first_window_percentage: number;
     second_window_seats: number;
     second_window_percentage: number;
   };
   business: {
+    total_seats: number;
     first_window_seats: number;
     first_window_percentage: number;
     second_window_seats: number;
@@ -27,14 +30,17 @@ export interface IClassWindowPrice {
 
 export interface IClassWindowPriceForUser {
   economy: {
+    total_seats: number;
     price: number;
     seats: number;
   };
   premium: {
+    total_seats: number;
     price: number;
     seats: number;
   };
   business: {
+    total_seats: number;
     price: number;
     seats: number;
   };
@@ -49,6 +55,14 @@ export interface IFlightRequest {
   status: IFlightStatus;
   class_window_price: IClassWindowPrice;
   price: number;
+}
+
+export interface IFlightRequestWithoutTotalSeats extends Omit<IFlightRequest, 'class_window_price'> {
+  class_window_price: Omit<IClassWindowPrice, 'economy' | 'premium' | 'business'> & {
+    economy: Omit<IClassWindowPrice['economy'], 'total_seats'>;
+    premium: Omit<IClassWindowPrice['premium'], 'total_seats'>;
+    business: Omit<IClassWindowPrice['business'], 'total_seats'>;
+  };
 }
 
 export interface IFlight extends IFlightRequest {

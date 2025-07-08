@@ -11,7 +11,6 @@ import {
 import { getPool } from '../util/dbPool.util';
 import { IFlightStatus, IFlightWindow } from '../types/flight.types';
 import { AirplaneRepository } from './airplane.repository';
-import { queryFlightWithDetailById } from '../util/flight.util';
 import { CityRepository } from './city.repository';
 import { ICityWithCountry } from '../interface/cities.interface';
 import {
@@ -38,13 +37,9 @@ export class FlightRepository {
     try {
       const airplane = await this.airplaneRepository.getAirplaneById(data.airplane_id);
       const total_seats =
-        data.class_window_price.economy.first_window_seats +
-        data.class_window_price.economy.second_window_seats +
-        data.class_window_price.economy.third_window_seats +
-        data.class_window_price.business.first_window_seats +
-        data.class_window_price.business.second_window_seats +
-        data.class_window_price.premium.first_window_seats +
-        data.class_window_price.premium.second_window_seats;
+        data.class_window_price.economy.total_seats +
+        data.class_window_price.premium.total_seats +
+        data.class_window_price.business.total_seats;
       if (airplane.capacity !== total_seats) {
         throw new ApiError(
           400,
@@ -141,7 +136,7 @@ export class FlightRepository {
       const arrivalCityCountry: ICityWithCountry = await this.cityRepository.getCityById(arrival_city_id);
       let hops = 1;
       //! 1 stop for domestic flight
-      // ! 3 stops for international flight
+      // ! 4 stops for international flight
       //! for domestic flights 60 min is min layover time and 180 min is maximum
       //! for international flights 60 min is minimum layover time and 360 min is maximum
       if (departureCityCountry.country.id !== arrivalCityCountry.country.id) hops = 4;
@@ -154,8 +149,8 @@ export class FlightRepository {
       const MAX_DOMESTIC_LAYOVER = 180 * 60 * 1000; // 180 minutes in milliseconds
       const MAX_INTERNATIONAL_LAYOVER = 360 * 60 * 1000; // 360 minutes in milliseconds
       const queue: IFlightQueue[][] = [];
-      const visited = new Set<string>(); // to keep track of visited flights
-      visited.add(departure_city_id); // add the departure city to visited set
+      const visitedQueue: Set<string>[] = [];
+      // const visited = new Set<string>(); // to keep track of visited flights
       for (const flight of flights) {
         const flightQueueData: IFlightQueue = {
           ...flight,
@@ -166,14 +161,16 @@ export class FlightRepository {
         // push all the flights for the day to the queue
         // each flight is a new flightQueueArray
         queue.push([flightQueueData]);
+        visitedQueue.push(new Set<string>());
       }
       while (queue.length > 0) {
         // pop from front of the queue
         const flightQueueArray: IFlightQueue[] = queue.shift()!;
+        const visitedQueueSet: Set<string> = visitedQueue.shift()!;
         const n = flightQueueArray.length;
         // fetch last flight in the array
         const lastFlightQueue: IFlightQueue = flightQueueArray[n - 1];
-        visited.add(lastFlightQueue.arrival_airport_id); // add the last flight's arrival airport to visited set
+        const lastFlightCityData = await this.cityRepository.getCityByAirportId(lastFlightQueue.departure_airport_id);
         // find the last flight's arrival city
         const arrivalCityData = await this.cityRepository.getCityByAirportId(lastFlightQueue.arrival_airport_id);
         if (arrivalCityData.id === arrival_city_id || lastFlightQueue.hops === 0) {
@@ -183,7 +180,7 @@ export class FlightRepository {
           continue;
         }
         // get all the flights from last flight's arrival airport whose departure and arrival time is within the min and max layover time
-        //! assuming, flight takes minimum min_layover_time minutes time and maximum max_layover_time minutes
+        // assuming, flight takes minimum min_layover_time minutes time and maximum max_layover_time minutes
         const query = `
           SELECT * FROM flights
           WHERE 
@@ -205,10 +202,13 @@ export class FlightRepository {
         const nextFlights: IFlight[] = flights.rows;
         for (const nextFlight of nextFlights) {
           // add next flight to the queue
-          if (visited.has(nextFlight.id)) {
+          const flightCityData = await this.cityRepository.getCityByAirportId(nextFlight.departure_airport_id);
+          if (visitedQueueSet.has(flightCityData.id)) {
             // if the next flight is already visited, then skip it
             continue;
           }
+          const newVisitedSet = new Set<string>(visitedQueueSet);
+          newVisitedSet.add(lastFlightCityData.id);
           const nextFlightQueueArray: IFlightQueue[] = [
             ...flightQueueArray,
             {
@@ -220,6 +220,7 @@ export class FlightRepository {
           ];
           // push the updated flightQueueArray to the queue
           queue.push(nextFlightQueueArray);
+          visitedQueue.push(newVisitedSet);
           // remove the last flight from the flightQueueArray
         }
       }
@@ -227,7 +228,7 @@ export class FlightRepository {
       for (const flightPath of flightRoute) {
         const flights: IFlightWithDetailsForUser[] = await Promise.all(
           flightPath.map(async (flightData) => {
-            const flight: IFlightWithDetails = await queryFlightWithDetailById(flightData.id);
+            const flight: IFlightWithDetails = await this.getFlightByIdForAdmin(flightData.id);
             const class_window_price: IClassWindowPrice = flight.class_window_price;
             const class_price_seats: IClassWindowPriceForUser = classPriceSeat(flight, class_window_price);
             return returnFlightForUser(flight, class_price_seats);
@@ -259,6 +260,18 @@ export class FlightRepository {
   async updateFlightArrivalTime(id: string, arrival_time: Date): Promise<IFlightWithDetails> {
     const client: PoolClient = await this.pool.connect();
     try {
+      const flightData = await this.getFlightByIdForAdmin(id);
+      if (!flightData) {
+        throw new ApiError(404, `Flight with id ${id} not found`);
+      }
+      if (arrival_time < flightData.departure_time) {
+        throw new ApiError(400, 'Arrival time cannot be before departure time');
+      }
+      // assuming the maximum arrival time is 18 hours after departure time
+      const maxArrivalTime = new Date(flightData.departure_time.getTime() + 18 * 60 * 60 * 1000);
+      if (arrival_time > maxArrivalTime) {
+        throw new ApiError(400, 'Arrival time cannot be more than 24 hours after departure time');
+      }
       let query = `UPDATE flights SET arrival_time = $1 WHERE id = $2`;
       await client.query(query, [arrival_time, id]);
       query = fetchFlightBy('id');
@@ -276,6 +289,21 @@ export class FlightRepository {
   async updateFlightDepartureTime(id: string, departure_time: Date): Promise<IFlightWithDetails> {
     const client: PoolClient = await this.pool.connect();
     try {
+      const flightData = await this.getFlightByIdForAdmin(id);
+      if (!flightData) {
+        throw new ApiError(404, `Flight with id ${id} not found`);
+      }
+      if (departure_time < new Date()) {
+        throw new ApiError(400, 'Departure time cannot be in the past');
+      }
+      if (departure_time > flightData.arrival_time) {
+        throw new ApiError(400, 'Departure time cannot be after arrival time');
+      }
+      // assuming the maximum departure time is 18 hours before arrival time
+      const maxDepartureTime = new Date(flightData.arrival_time.getTime() - 18 * 60 * 60 * 1000);
+      if (departure_time < maxDepartureTime) {
+        throw new ApiError(400, 'Departure time cannot be more than 24 hours before arrival time');
+      }
       let query = `UPDATE flights SET departure_time = $1 WHERE id = $2`;
       await client.query(query, [departure_time, id]);
       query = fetchFlightBy('id');
