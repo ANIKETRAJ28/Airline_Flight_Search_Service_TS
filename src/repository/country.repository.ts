@@ -8,11 +8,23 @@ export class CountryRepository {
 
   constructor() {}
 
-  async getAllCountries(): Promise<ICountry[]> {
+  async getCountries(): Promise<ICountry[]> {
     const client: PoolClient = await this.pool.connect();
     try {
       const query = 'SELECT * FROM countries';
       const result = await client.query(query);
+      const countries: ICountry[] = result.rows;
+      return countries;
+    } finally {
+      await client.release();
+    }
+  }
+
+  async getAllCountries(offset: number): Promise<ICountry[]> {
+    const client: PoolClient = await this.pool.connect();
+    try {
+      const query = 'SELECT * FROM countries ORDER BY id DESC LIMIT 10 OFFSET $1';
+      const result = await client.query(query, [offset]);
       const countries: ICountry[] = result.rows;
       return countries;
     } finally {
@@ -30,6 +42,18 @@ export class CountryRepository {
         throw new ApiError(404, `Country with id ${id} not found`);
       }
       return country;
+    } finally {
+      await client.release();
+    }
+  }
+
+  async searchCountry(keyword: string, offset: number): Promise<ICountry[]> {
+    const client: PoolClient = await this.pool.connect();
+    try {
+      const query = 'SELECT * FROM countries WHERE name ILIKE $1 OR code ILIKE $1 ORDER BY id DESC LIMIT 10 OFFSET $2';
+      const result = await client.query(query, [`%${keyword}%`, offset]);
+      const countries: ICountry[] = result.rows;
+      return countries;
     } finally {
       await client.release();
     }

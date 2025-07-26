@@ -1,6 +1,6 @@
 import { PoolClient } from 'pg';
 
-import { ICityRequest, ICityWithCountry } from '../interface/cities.interface';
+import { ICity, ICityRequest, ICityWithCountry } from '../interface/cities.interface';
 import { getPool } from '../util/dbPool.util';
 import { ApiError } from '../util/api.util';
 
@@ -9,11 +9,23 @@ export class CityRepository {
 
   constructor() {}
 
-  async getAllCities(): Promise<ICityWithCountry[]> {
+  async getCities(): Promise<ICity[]> {
     const client: PoolClient = await this.pool.connect();
     try {
-      const query = `SELECT c.*, co.name AS country_name, co.code AS country_code, co.created_at AS country_created_at, co.updated_at AS country_updated_at FROM cities c INNER JOIN countries co ON c.country_id = co.id`;
+      const query = `SELECT * FROM cities`;
       const result = await client.query(query);
+      const cities: ICity[] = result.rows;
+      return cities;
+    } finally {
+      await client.release();
+    }
+  }
+
+  async getAllCities(offset: number): Promise<ICityWithCountry[]> {
+    const client: PoolClient = await this.pool.connect();
+    try {
+      const query = `SELECT c.*, co.name AS country_name, co.code AS country_code, co.created_at AS country_created_at, co.updated_at AS country_updated_at FROM cities c INNER JOIN countries co ON c.country_id = co.id ORDER BY id DESC LIMIT 10 OFFSET $1`;
+      const result = await client.query(query, [offset]);
       const cities: ICityWithCountry[] = result.rows.map((row) => ({
         id: row.id,
         name: row.name,
@@ -61,11 +73,61 @@ export class CityRepository {
     }
   }
 
-  async searchCities(name: string): Promise<ICityWithCountry[]> {
+  async getCitiesByName(name: string): Promise<ICityWithCountry[]> {
     const client: PoolClient = await this.pool.connect();
     try {
       const query = `SELECT c.*, co.name AS country_name, co.code AS country_code, co.created_at AS country_created_at, co.updated_at AS country_updated_at FROM cities c INNER JOIN countries co ON c.country_id = co.id WHERE c.name ILIKE $1`;
       const result = await client.query(query, [`%${name}%`]);
+      const cities = result.rows;
+      const cityResponse: ICityWithCountry[] = cities.map((city) => ({
+        id: city.id,
+        name: city.name,
+        country: {
+          id: city.country_id,
+          code: city.country_code,
+          name: city.country_name,
+          created_at: city.country_created_at,
+          updated_at: city.country_updated_at,
+        },
+        created_at: city.created_at,
+        updated_at: city.updated_at,
+      }));
+      return cityResponse;
+    } finally {
+      await client.release();
+    }
+  }
+
+  async getCitiesForCountry(countryId: string, offset: number): Promise<ICityWithCountry[]> {
+    const client: PoolClient = await this.pool.connect();
+    try {
+      const query = `SELECT c.*, co.name AS country_name, co.code AS country_code, co.created_at AS country_created_at, co.updated_at AS country_updated_at FROM cities c INNER JOIN countries co ON c.country_id = co.id WHERE c.country_id = $1 ORDER BY c.id DESC LIMIT 10 OFFSET $2`;
+      const result = await client.query(query, [countryId, offset]);
+      const cities = result.rows;
+      const cityResponse: ICityWithCountry[] = cities.map((city) => ({
+        id: city.id,
+        name: city.name,
+        country: {
+          id: city.country_id,
+          code: city.country_code,
+          name: city.country_name,
+          created_at: city.country_created_at,
+          updated_at: city.country_updated_at,
+        },
+        created_at: city.created_at,
+        updated_at: city.updated_at,
+      }));
+      return cityResponse;
+    } finally {
+      await client.release();
+    }
+  }
+
+  async searchCities(keyword: string, offset: number): Promise<ICityWithCountry[]> {
+    const client: PoolClient = await this.pool.connect();
+    try {
+      const query = `SELECT c.*, co.name AS country_name, co.code AS country_code, co.created_at AS country_created_at, co.updated_at AS country_updated_at FROM cities c INNER JOIN countries co ON c.country_id = co.id WHERE c.name ILIKE $1 ORDER BY c.id DESC LIMIT 10 OFFSET $2`;
+      const result = await client.query(query, [`%${keyword}%`, offset]);
       const cities = result.rows;
       const cityResponse: ICityWithCountry[] = cities.map((city) => ({
         id: city.id,

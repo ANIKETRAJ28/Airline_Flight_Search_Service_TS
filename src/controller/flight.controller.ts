@@ -18,16 +18,28 @@ export class FlightController {
       if (!flightPayload) {
         throw new ApiError(400, 'Flight details are required');
       }
+      const { business, economy, premium } = flightPayload.class_window_price;
       if (
-        flightPayload.class_window_price.economy.first_window_seats < 0 ||
-        flightPayload.class_window_price.economy.second_window_seats < 0 ||
-        flightPayload.class_window_price.economy.third_window_seats < 0 ||
-        flightPayload.class_window_price.premium.first_window_seats < 0 ||
-        flightPayload.class_window_price.premium.second_window_seats < 0 ||
-        flightPayload.class_window_price.business.first_window_seats < 0 ||
-        flightPayload.class_window_price.business.second_window_seats < 0
+        economy.first_window_seats < 0 ||
+        economy.second_window_seats < 0 ||
+        economy.third_window_seats < 0 ||
+        premium.first_window_seats < 0 ||
+        premium.second_window_seats < 0 ||
+        business.first_window_seats < 0 ||
+        business.second_window_seats < 0
       ) {
         throw new ApiError(400, 'Number of seats cannot be negative');
+      }
+      if (
+        economy.first_window_percentage < 1 ||
+        economy.second_window_percentage < 1 ||
+        economy.third_window_percentage < 1 ||
+        premium.first_window_percentage < 1 ||
+        premium.second_window_percentage < 1 ||
+        business.first_window_percentage < 1 ||
+        business.second_window_percentage < 1
+      ) {
+        throw new ApiError(400, 'Multiplicative factor of window seats cannot be less than 1');
       }
       const data = {
         ...flightPayload,
@@ -61,9 +73,10 @@ export class FlightController {
     }
   };
 
-  getAllFlights = async (_req: Request, res: Response): Promise<void> => {
+  getAllFlights = async (req: Request, res: Response): Promise<void> => {
     try {
-      const flights = await this.flightService.getAllFlights();
+      const offset = parseInt(req.query.offset as string) || 0;
+      const flights = await this.flightService.getAllFlights(offset);
       apiHandler(res, 200, 'All flights fetched successfully', flights);
     } catch (error) {
       errorHandler(error, res);
@@ -104,6 +117,62 @@ export class FlightController {
       }
       const flight = await this.flightService.getFlightByFlightNumber(flightNumber);
       apiHandler(res, 200, 'Flight fetched successfully', flight);
+    } catch (error) {
+      errorHandler(error, res);
+    }
+  };
+
+  getFlightsByDepartureAirport = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const departureAirportId = req.params.departure_airport_id;
+      if (!departureAirportId) {
+        throw new ApiError(400, 'Departure airport ID is required');
+      }
+      const offset = parseInt(req.query.offset as string) || 0;
+      const flights = await this.flightService.getFlightsByDepartureAirport(departureAirportId, offset);
+      apiHandler(res, 200, 'Flights by departure airport fetched successfully', flights);
+    } catch (error) {
+      errorHandler(error, res);
+    }
+  };
+
+  getFlightsByArrivalAirport = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const arrivalAirportId = req.params.arrival_airport_id;
+      if (!arrivalAirportId) {
+        throw new ApiError(400, 'Arrival airport ID is required');
+      }
+      const offset = parseInt(req.query.offset as string) || 0;
+      const flights = await this.flightService.getFlightsByArrivalAirport(arrivalAirportId, offset);
+      apiHandler(res, 200, 'Flights by arrival airport fetched successfully', flights);
+    } catch (error) {
+      errorHandler(error, res);
+    }
+  };
+
+  getFlightByStatus = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const status: IFlightStatus = req.query.status as IFlightStatus;
+      if (!status) {
+        throw new ApiError(400, 'Flight status is required');
+      }
+      const offset = parseInt(req.query.offset as string) || 0;
+      const flights = await this.flightService.getFlightByStatus(status, offset);
+      apiHandler(res, 200, 'Flights by status fetched successfully', flights);
+    } catch (error) {
+      errorHandler(error, res);
+    }
+  };
+
+  getFlightsByDate = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const date = new Date(req.query.date as string);
+      if (isNaN(date.getTime())) {
+        throw new ApiError(400, 'Invalid date format');
+      }
+      const offset = parseInt(req.query.offset as string) || 0;
+      const flights = await this.flightService.getFlightsByDate(date, offset);
+      apiHandler(res, 200, 'Flights by date fetched successfully', flights);
     } catch (error) {
       errorHandler(error, res);
     }

@@ -1,4 +1,4 @@
-import { IAirportRequest, IAirportWithCityAndCountry } from '../interface/airports.interface';
+import { IAirport, IAirportRequest, IAirportWithCityAndCountry } from '../interface/airports.interface';
 import { AirportRepository } from '../repository/airport.repositry';
 
 export class AirportService {
@@ -12,24 +12,36 @@ export class AirportService {
     return await this.airportRepository.createAirport(airport);
   }
 
-  async getAllAirports(): Promise<IAirportWithCityAndCountry[]> {
-    return await this.airportRepository.getAllAirports();
+  async getAirports(): Promise<IAirport[]> {
+    return await this.airportRepository.getAirports();
+  }
+
+  async getAllAirports(offset: number): Promise<IAirportWithCityAndCountry[]> {
+    return await this.airportRepository.getAllAirports(offset);
   }
 
   async getAirportById(id: string): Promise<IAirportWithCityAndCountry> {
     return await this.airportRepository.getAirportById(id);
   }
 
+  async searchAirports(keyword: string, offset: number): Promise<IAirportWithCityAndCountry[]> {
+    return await this.airportRepository.searchAirports(keyword, offset);
+  }
+
   async getAirportByCode(code: string): Promise<IAirportWithCityAndCountry> {
     return await this.airportRepository.getAirportByCode(code);
   }
 
-  async getAllAirportsOfCityByCityId(cityId: string): Promise<IAirportWithCityAndCountry[]> {
-    return await this.airportRepository.getAllAirportsOfCityByCityId(cityId);
+  async getAllAirportsOfCityByCityId(cityId: string, offset: number): Promise<IAirportWithCityAndCountry[]> {
+    return await this.airportRepository.getAllAirportsOfCityByCityId(cityId, offset);
   }
 
   async getAllAirportsOfCityByCityName(cityName: string): Promise<IAirportWithCityAndCountry[]> {
     return await this.airportRepository.getAllAirportsOfCityByCityName(cityName);
+  }
+
+  async getAirportsForCountry(countryId: string, offset: number): Promise<IAirportWithCityAndCountry[]> {
+    return await this.airportRepository.getAirportsForCountry(countryId, offset);
   }
 
   async updateAirportName(id: string, name: string): Promise<IAirportWithCityAndCountry> {

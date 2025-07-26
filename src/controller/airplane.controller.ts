@@ -11,9 +11,19 @@ export class AirplaneController {
     this.airplaneService = new AirplaneService();
   }
 
+  getAirplanes = async (_req: Request, res: Response): Promise<void> => {
+    try {
+      const airplanes = await this.airplaneService.getAirplanes();
+      apiHandler(res, 200, 'Airplanes fetched successfully', airplanes);
+    } catch (error) {
+      errorHandler(error, res);
+    }
+  };
+
   getAllAirplanes = async (_req: Request, res: Response): Promise<void> => {
     try {
-      const airplanes = await this.airplaneService.getAllAirplanes();
+      const offset = parseInt(_req.query.offset as string) || 0;
+      const airplanes = await this.airplaneService.getAllAirplanes(offset);
       apiHandler(res, 200, 'All airplanes fetched successfully', airplanes);
     } catch (error) {
       errorHandler(error, res);
@@ -41,6 +51,20 @@ export class AirplaneController {
       }
       const airplane = await this.airplaneService.getAirplaneByCode(code);
       apiHandler(res, 200, 'Airplane fetched successfully', airplane);
+    } catch (error) {
+      errorHandler(error, res);
+    }
+  };
+
+  searchAirplanes = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { keyword, offset } = req.query;
+      if (!keyword || typeof keyword !== 'string') {
+        throw new ApiError(400, 'Search keyword is required');
+      }
+      const offsetValue = parseInt(offset as string) || 0;
+      const airplanes = await this.airplaneService.searchAirplanes(keyword, offsetValue);
+      apiHandler(res, 200, 'Airplanes fetched successfully', airplanes);
     } catch (error) {
       errorHandler(error, res);
     }

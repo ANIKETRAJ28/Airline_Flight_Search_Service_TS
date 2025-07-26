@@ -1,6 +1,6 @@
 import { Pool, PoolClient } from 'pg';
 
-import { IAirportRequest, IAirportWithCityAndCountry } from '../interface/airports.interface';
+import { IAirport, IAirportRequest, IAirportWithCityAndCountry } from '../interface/airports.interface';
 import { getPool } from '../util/dbPool.util';
 import { fetchAirportById, returnAirport } from '../util/airportQuery.util';
 import { ApiError } from '../util/api.util';
@@ -24,6 +24,18 @@ export class AirportRepository {
     }
   }
 
+  async getAirports(): Promise<IAirport[]> {
+    const client: PoolClient = await this.pool.connect();
+    try {
+      const query = 'SELECT * FROM airports';
+      const result = await client.query(query);
+      const airports: IAirport[] = result.rows;
+      return airports;
+    } finally {
+      await client.release();
+    }
+  }
+
   async getAirportById(id: string): Promise<IAirportWithCityAndCountry> {
     const client: PoolClient = await this.pool.connect();
     try {
@@ -33,6 +45,24 @@ export class AirportRepository {
         throw new ApiError(404, `Airport with id ${id} not found`);
       }
       return returnAirport(airport);
+    } finally {
+      await client.release();
+    }
+  }
+
+  async searchAirports(keyword: string, offset: number): Promise<IAirportWithCityAndCountry[]> {
+    const client: PoolClient = await this.pool.connect();
+    try {
+      const query = `SELECT a.*,
+                    c.id AS city_id, c.name AS city_name, c.created_at AS city_created_at, c.updated_at AS city_updated_at, 
+                    co.id AS country_id, co.name AS country_name, co.code AS country_code, co.created_at AS country_created_at, co.updated_at AS country_updated_at 
+                      FROM airports a
+                        INNER JOIN cities c ON a.city_id = c.id
+                        INNER JOIN countries co ON c.country_id = co.id
+                      WHERE a.name ILIKE $1 OR a.code ILIKE $1 ORDER BY a.id DESC LIMIT 10 OFFSET $2`;
+      const result = await client.query(query, [`%${keyword}%`, offset]);
+      const airports = result.rows;
+      return airports.map((airport) => returnAirport(airport));
     } finally {
       await client.release();
     }
@@ -59,7 +89,7 @@ export class AirportRepository {
     }
   }
 
-  async getAllAirportsOfCityByCityId(cityId: string): Promise<IAirportWithCityAndCountry[]> {
+  async getAllAirportsOfCityByCityId(cityId: string, offset: number): Promise<IAirportWithCityAndCountry[]> {
     const client: PoolClient = await this.pool.connect();
     try {
       const query = `SELECT a.*, 
@@ -68,8 +98,8 @@ export class AirportRepository {
                       FROM airports a
                         INNER JOIN cities c ON a.city_id = c.id
                         INNER JOIN countries co ON c.country_id = co.id
-                      WHERE c.id = $1`;
-      const result = await client.query(query, [cityId]);
+                      WHERE c.id = $1 ORDER BY a.id DESC LIMIT 10 OFFSET $2`;
+      const result = await client.query(query, [cityId, offset]);
       const airports = result.rows;
       return airports.map((airport) => returnAirport(airport));
     } finally {
@@ -95,7 +125,7 @@ export class AirportRepository {
     }
   }
 
-  async getAllAirports(): Promise<IAirportWithCityAndCountry[]> {
+  async getAllAirports(offset: number): Promise<IAirportWithCityAndCountry[]> {
     const client: PoolClient = await this.pool.connect();
     try {
       const query = `SELECT a.*, 
@@ -103,8 +133,27 @@ export class AirportRepository {
                     co.id AS country_id, co.name AS country_name, co.code AS country_code, co.created_at AS country_created_at, co.updated_at AS country_updated_at 
                       FROM airports a
                         INNER JOIN cities c ON a.city_id = c.id
-                        INNER JOIN countries co ON c.country_id = co.id`;
-      const result = await client.query(query);
+                        INNER JOIN countries co ON c.country_id = co.id
+                    ORDER BY a.id DESC LIMIT 10 OFFSET $1`;
+      const result = await client.query(query, [offset]);
+      const airports = result.rows;
+      return airports.map((airport) => returnAirport(airport));
+    } finally {
+      await client.release();
+    }
+  }
+
+  async getAirportsForCountry(countryId: string, offset: number): Promise<IAirportWithCityAndCountry[]> {
+    const client: PoolClient = await this.pool.connect();
+    try {
+      const query = `SELECT a.*,
+                    c.id AS city_id, c.name AS city_name, c.created_at AS city_created_at, c.updated_at AS city_updated_at, 
+                    co.id AS country_id, co.name AS country_name, co.code AS country_code, co.created_at AS country_created_at, co.updated_at AS country_updated_at 
+                      FROM airports a
+                        INNER JOIN cities c ON a.city_id = c.id
+                        INNER JOIN countries co ON c.country_id = co.id
+                      WHERE co.id = $1 ORDER BY a.id DESC LIMIT 10 OFFSET $2`;
+      const result = await client.query(query, [countryId, offset]);
       const airports = result.rows;
       return airports.map((airport) => returnAirport(airport));
     } finally {

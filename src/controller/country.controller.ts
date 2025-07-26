@@ -11,9 +11,19 @@ export class CountryController {
     this.countryService = new CountryService();
   }
 
-  getAllCountries = async (_req: Request, res: Response): Promise<void> => {
+  getCountries = async (req: Request, res: Response): Promise<void> => {
     try {
-      const countries: ICountry[] = await this.countryService.getAllCountries();
+      const countries: ICountry[] = await this.countryService.getCountries();
+      apiHandler(res, 200, 'All countries fetched successfully', countries);
+    } catch (error) {
+      errorHandler(error, res);
+    }
+  };
+
+  getAllCountries = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const offset = parseInt(req.query.offset as string) || 0;
+      const countries: ICountry[] = await this.countryService.getAllCountries(offset);
       apiHandler(res, 200, 'All countries fetched successfully', countries);
     } catch (error) {
       errorHandler(error, res);
@@ -28,6 +38,20 @@ export class CountryController {
       }
       const country: ICountry = await this.countryService.getCountryById(id);
       apiHandler(res, 200, 'Country fetched successfully', country);
+    } catch (error) {
+      errorHandler(error, res);
+    }
+  };
+
+  searchCountry = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { keyword, offset } = req.query;
+      if (!keyword || typeof keyword !== 'string') {
+        throw new ApiError(400, 'Search keyword is required');
+      }
+      const offsetValue = parseInt(offset as string) || 0;
+      const countries: ICountry[] = await this.countryService.searchCountry(keyword, offsetValue);
+      apiHandler(res, 200, 'Countries fetched successfully', countries);
     } catch (error) {
       errorHandler(error, res);
     }

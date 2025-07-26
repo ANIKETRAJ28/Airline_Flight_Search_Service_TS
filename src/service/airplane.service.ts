@@ -8,12 +8,20 @@ export class AirplaneService {
     this.airplaneRepository = new AirplaneRepository();
   }
 
-  async getAllAirplanes(): Promise<IAirplane[]> {
-    return await this.airplaneRepository.getAllAirplanes();
+  async getAirplanes(): Promise<IAirplane[]> {
+    return await this.airplaneRepository.getAirplanes();
+  }
+
+  async getAllAirplanes(offset: number): Promise<IAirplane[]> {
+    return await this.airplaneRepository.getAllAirplanes(offset);
   }
 
   async getAirplaneById(id: string): Promise<IAirplane> {
     return await this.airplaneRepository.getAirplaneById(id);
+  }
+
+  async searchAirplanes(keyword: string, offset: number): Promise<IAirplane[]> {
+    return await this.airplaneRepository.searchAirplanes(keyword, offset);
   }
 
   async getAirplaneByCode(code: string): Promise<IAirplane> {

@@ -8,11 +8,23 @@ export class AirplaneRepository {
 
   constructor() {}
 
-  async getAllAirplanes(): Promise<IAirplane[]> {
+  async getAirplanes(): Promise<IAirplane[]> {
     const client: PoolClient = await this.pool.connect();
     try {
       const query = 'SELECT * FROM airplanes';
       const result = await client.query(query);
+      const airplanes: IAirplane[] = result.rows;
+      return airplanes;
+    } finally {
+      await client.release();
+    }
+  }
+
+  async getAllAirplanes(offset: number): Promise<IAirplane[]> {
+    const client: PoolClient = await this.pool.connect();
+    try {
+      const query = 'SELECT * FROM airplanes ORDER BY id DESC LIMIT 10 OFFSET $1';
+      const result = await client.query(query, [offset]);
       const airplanes: IAirplane[] = result.rows;
       return airplanes;
     } finally {
@@ -30,6 +42,18 @@ export class AirplaneRepository {
         throw new ApiError(404, `Airplane with id ${id} not found`);
       }
       return airplane;
+    } finally {
+      await client.release();
+    }
+  }
+
+  async searchAirplanes(keyword: string, offset: number): Promise<IAirplane[]> {
+    const client: PoolClient = await this.pool.connect();
+    try {
+      const query = 'SELECT * FROM airplanes WHERE name ILIKE $1 OR code ILIKE $1 ORDER BY id DESC LIMIT 10 OFFSET $2';
+      const result = await client.query(query, [`%${keyword}%`, offset]);
+      const airplanes: IAirplane[] = result.rows;
+      return airplanes;
     } finally {
       await client.release();
     }

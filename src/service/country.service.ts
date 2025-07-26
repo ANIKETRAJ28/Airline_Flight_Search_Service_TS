@@ -8,12 +8,20 @@ export class CountryService {
     this.countryRepository = new CountryRepository();
   }
 
-  async getAllCountries(): Promise<ICountry[]> {
-    return await this.countryRepository.getAllCountries();
+  async getCountries(): Promise<ICountry[]> {
+    return await this.countryRepository.getCountries();
+  }
+
+  async getAllCountries(offset: number): Promise<ICountry[]> {
+    return await this.countryRepository.getAllCountries(offset);
   }
 
   async getCountryById(id: string): Promise<ICountry> {
     return await this.countryRepository.getCountryById(id);
+  }
+
+  async searchCountry(keyword: string, offset: number): Promise<ICountry[]> {
+    return await this.countryRepository.searchCountry(keyword, offset);
   }
 
   async getCountryByName(name: string): Promise<ICountry> {

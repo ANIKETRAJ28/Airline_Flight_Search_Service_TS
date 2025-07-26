@@ -7,6 +7,8 @@ export const airplaneRouter = Router();
 const airplaneController = new AirplaneController();
 
 airplaneRouter.get('/', jwtMiddleware, checkAdminRole, airplaneController.getAllAirplanes);
+airplaneRouter.get('/list', jwtMiddleware, checkAdminRole, airplaneController.getAirplanes);
+airplaneRouter.get('/search', jwtMiddleware, checkAdminRole, airplaneController.searchAirplanes);
 airplaneRouter.get('/:id', airplaneController.getAirplaneById); // internal use
 airplaneRouter.get('/name/:name', jwtMiddleware, checkAdminRole, airplaneController.getAirplaneByName);
 airplaneRouter.get('/code/:code', jwtMiddleware, checkAdminRole, airplaneController.getAirplaneByCode);

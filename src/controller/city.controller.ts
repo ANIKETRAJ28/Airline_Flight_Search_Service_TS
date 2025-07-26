@@ -10,9 +10,19 @@ export class CityController {
     this.cityService = new CityService();
   }
 
-  getAllCities = async (_req: Request, res: Response): Promise<void> => {
+  getCities = async (_req: Request, res: Response): Promise<void> => {
     try {
-      const cities = await this.cityService.getAllCities();
+      const cities = await this.cityService.getCities();
+      apiHandler(res, 200, 'All cities fetched successfully', cities);
+    } catch (error) {
+      errorHandler(error, res);
+    }
+  };
+
+  getAllCities = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const offset = parseInt(req.query.offset as string) || 0;
+      const cities = await this.cityService.getAllCities(offset);
       apiHandler(res, 200, 'All cities fetched successfully', cities);
     } catch (error) {
       errorHandler(error, res);
@@ -32,13 +42,41 @@ export class CityController {
     }
   };
 
-  searchCities = async (req: Request, res: Response): Promise<void> => {
+  getCitiesByName = async (req: Request, res: Response): Promise<void> => {
     try {
       const { name } = req.query;
       if (!name || typeof name !== 'string') {
         throw new ApiError(400, 'City name is required');
       }
-      const city = await this.cityService.searchCities(name);
+      const city = await this.cityService.getCitiesByName(name);
+      apiHandler(res, 200, 'City fetched successfully', city);
+    } catch (error) {
+      errorHandler(error, res);
+    }
+  };
+
+  getCitiesForCountry = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { countryId } = req.params;
+      const offset = parseInt(req.query.offset as string) || 0;
+      if (!countryId) {
+        throw new ApiError(400, 'Country ID is required');
+      }
+      const cities = await this.cityService.getCitiesForCountry(countryId, offset);
+      apiHandler(res, 200, 'Cities for country fetched successfully', cities);
+    } catch (error) {
+      errorHandler(error, res);
+    }
+  };
+
+  searchCities = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { keyword, offset } = req.query;
+      if (!keyword || typeof keyword !== 'string') {
+        throw new ApiError(400, 'Search keyword is required');
+      }
+      const offsetValue = parseInt(offset as string) || 0;
+      const city = await this.cityService.searchCities(keyword, offsetValue);
       apiHandler(res, 200, 'City fetched successfully', city);
     } catch (error) {
       errorHandler(error, res);

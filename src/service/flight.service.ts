@@ -13,8 +13,8 @@ export class FlightService {
     return await this.flightRepository.createFlight(data);
   }
 
-  async getAllFlights(): Promise<IFlightWithDetails[]> {
-    return await this.flightRepository.getAllFlights();
+  async getAllFlights(offset: number): Promise<IFlightWithDetails[]> {
+    return await this.flightRepository.getAllFlights(offset);
   }
 
   async getFlightByIdForAdmin(id: string): Promise<IFlightWithDetails> {
@@ -27,6 +27,22 @@ export class FlightService {
 
   async getFlightByFlightNumber(flight_number: string): Promise<IFlightWithDetails> {
     return await this.flightRepository.getFlightByFlightNumber(flight_number);
+  }
+
+  async getFlightsByDepartureAirport(departure_airport_id: string, offset: number): Promise<IFlightWithDetails[]> {
+    return await this.flightRepository.getFlightsByDepartureAirport(departure_airport_id, offset);
+  }
+
+  async getFlightsByArrivalAirport(arrival_airport_id: string, offset: number): Promise<IFlightWithDetails[]> {
+    return await this.flightRepository.getFlightsByArrivalAirport(arrival_airport_id, offset);
+  }
+
+  async getFlightByStatus(status: IFlightStatus, offset: number): Promise<IFlightWithDetails[]> {
+    return await this.flightRepository.getFlightByStatus(status, offset);
+  }
+
+  async getFlightsByDate(date: Date, offset: number): Promise<IFlightWithDetails[]> {
+    return await this.flightRepository.getFlightsByDate(date, offset);
   }
 
   async getFlightsForArrivalAndDepartureCity(

@@ -11,9 +11,19 @@ export class AirportController {
     this.airportService = new AirportService();
   }
 
-  getAllAirports = async (_req: Request, res: Response): Promise<void> => {
+  getAirports = async (req: Request, res: Response): Promise<void> => {
     try {
-      const airports = await this.airportService.getAllAirports();
+      const airports = await this.airportService.getAirports();
+      apiHandler(res, 200, 'Airports fetched successfully', airports);
+    } catch (error) {
+      errorHandler(error, res);
+    }
+  };
+
+  getAllAirports = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const offset = parseInt(req.query.offset as string) || 0;
+      const airports = await this.airportService.getAllAirports(offset);
       apiHandler(res, 200, 'All airports fetched successfully', airports);
     } catch (error) {
       errorHandler(error, res);
@@ -28,6 +38,20 @@ export class AirportController {
       }
       const airport = await this.airportService.getAirportById(id);
       apiHandler(res, 200, 'Airport fetched successfully', airport);
+    } catch (error) {
+      errorHandler(error, res);
+    }
+  };
+
+  searchAirports = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { keyword, offset } = req.query;
+      if (!keyword || typeof keyword !== 'string') {
+        throw new ApiError(400, 'Search keyword is required');
+      }
+      const offsetValue = parseInt(offset as string) || 0;
+      const airports = await this.airportService.searchAirports(keyword, offsetValue);
+      apiHandler(res, 200, 'Airports fetched successfully', airports);
     } catch (error) {
       errorHandler(error, res);
     }
@@ -52,7 +76,9 @@ export class AirportController {
       if (!id) {
         throw new ApiError(400, 'City ID is required');
       }
-      const airports = await this.airportService.getAllAirportsOfCityByCityId(id);
+      const { offset } = req.query;
+      const offsetValue = parseInt(offset as string) || 0;
+      const airports = await this.airportService.getAllAirportsOfCityByCityId(id, offsetValue);
       apiHandler(res, 200, 'Airports of city fetched successfully', airports);
     } catch (error) {
       errorHandler(error, res);
@@ -67,6 +93,20 @@ export class AirportController {
       }
       const airports = await this.airportService.getAllAirportsOfCityByCityName(name);
       apiHandler(res, 200, 'Airports of city fetched successfully', airports);
+    } catch (error) {
+      errorHandler(error, res);
+    }
+  };
+
+  getAirportsForCountry = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { countryId } = req.params;
+      const offset = parseInt(req.query.offset as string) || 0;
+      if (!countryId) {
+        throw new ApiError(400, 'Country ID is required');
+      }
+      const airports = await this.airportService.getAirportsForCountry(countryId, offset);
+      apiHandler(res, 200, 'Airports for country fetched successfully', airports);
     } catch (error) {
       errorHandler(error, res);
     }

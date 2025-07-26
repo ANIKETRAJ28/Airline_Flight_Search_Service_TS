@@ -73,10 +73,10 @@ export class FlightRepository {
     }
   }
 
-  async getAllFlights(): Promise<IFlightWithDetails[]> {
+  async getAllFlights(offset: number): Promise<IFlightWithDetails[]> {
     const client: PoolClient = await this.pool.connect();
     try {
-      const result = await client.query(fetchFlights);
+      const result = await client.query(fetchFlights, [offset]);
       const flights = result.rows;
       return flights.map((flight) => returnFlight(flight, flight.class_window_price));
     } finally {
@@ -126,12 +126,15 @@ export class FlightRepository {
     try {
       const query = `
         SELECT * FROM flights
-          WHERE departure_time::date = $1
+          WHERE departure_time >= $1
+          AND departure_time <= $2
           AND departure_airport_id IN (
             SELECT id FROM airports
-            WHERE city_id = $2
+            WHERE city_id = $3
           );
       `;
+      const utcDayStart = new Date(Date.UTC(day.getUTCFullYear(), day.getUTCMonth(), day.getUTCDate(), 0, 0, 0));
+      const utcDayEnd = new Date(Date.UTC(day.getUTCFullYear(), day.getUTCMonth(), day.getUTCDate(), 23, 59, 59));
       const departureCityCountry: ICityWithCountry = await this.cityRepository.getCityById(departure_city_id);
       const arrivalCityCountry: ICityWithCountry = await this.cityRepository.getCityById(arrival_city_id);
       let hops = 1;
@@ -142,7 +145,7 @@ export class FlightRepository {
       if (departureCityCountry.country.id !== arrivalCityCountry.country.id) hops = 4;
       const flightRoute: IFlight[][] = [];
       // query all the flights for the given day and departure city
-      const result = await client.query(query, [day, departure_city_id]);
+      const result = await client.query(query, [utcDayStart.toISOString(), utcDayEnd.toISOString(), departure_city_id]);
       const flights: IFlight[] = result.rows;
       // queue for fetching flights with bfs
       const MIN_LAYOVER = 60 * 60 * 1000; // 60 minutes in milliseconds
@@ -195,8 +198,8 @@ export class FlightRepository {
         const minLayoverTimeLeft = new Date(lastFlightQueueArrivalTime.getTime() + lastFlightQueue.min_layover_time); // calculate the minimum layover time left in milliseconds
         const maxLayoverTimeLeft = new Date(lastFlightQueueArrivalTime.getTime() + lastFlightQueue.max_layover_time); // calculate the maximum layover time left in milliseconds
         const flights = await client.query(query, [
-          minLayoverTimeLeft,
-          maxLayoverTimeLeft,
+          minLayoverTimeLeft.toISOString(),
+          maxLayoverTimeLeft.toISOString(),
           lastFlightQueue.arrival_airport_id,
         ]);
         const nextFlights: IFlight[] = flights.rows;
@@ -208,6 +211,16 @@ export class FlightRepository {
             continue;
           }
           const newVisitedSet = new Set<string>(visitedQueueSet);
+
+          const actualLayoverTimeMinutes =
+            (new Date(nextFlight.departure_time).getTime() - new Date(lastFlightQueue.arrival_time).getTime()) /
+            (1000 * 60);
+
+          const remainingMaxLayover = Math.max(
+            lastFlightQueue.max_layover_time / (1000 * 60) - actualLayoverTimeMinutes,
+            0,
+          );
+
           newVisitedSet.add(lastFlightCityData.id);
           const nextFlightQueueArray: IFlightQueue[] = [
             ...flightQueueArray,
@@ -215,7 +228,7 @@ export class FlightRepository {
               ...nextFlight,
               hops: lastFlightQueue.hops - 1,
               min_layover_time: lastFlightQueue.min_layover_time,
-              max_layover_time: lastFlightQueue.max_layover_time,
+              max_layover_time: remainingMaxLayover * 60 * 1000, // convert to milliseconds
             },
           ];
           // push the updated flightQueueArray to the queue
@@ -252,6 +265,54 @@ export class FlightRepository {
         throw new ApiError(404, `Flight with number ${flight_number} not found`);
       }
       return returnFlight(flight, flight.class_window_price);
+    } finally {
+      await client.release();
+    }
+  }
+
+  async getFlightsByDepartureAirport(departure_airport_id: string, offset: number): Promise<IFlightWithDetails[]> {
+    const client: PoolClient = await this.pool.connect();
+    try {
+      const query = fetchFlightBy('departure_airport_id', offset);
+      const result = await client.query(query, [departure_airport_id, offset]);
+      const flights = result.rows;
+      return flights.map((flight) => returnFlight(flight, flight.class_window_price));
+    } finally {
+      await client.release();
+    }
+  }
+
+  async getFlightsByArrivalAirport(arrival_airport_id: string, offset: number): Promise<IFlightWithDetails[]> {
+    const client: PoolClient = await this.pool.connect();
+    try {
+      const query = fetchFlightBy('arrival_airport_id', offset);
+      const result = await client.query(query, [arrival_airport_id, offset]);
+      const flights = result.rows;
+      return flights.map((flight) => returnFlight(flight, flight.class_window_price));
+    } finally {
+      await client.release();
+    }
+  }
+
+  async getFlightByStatus(status: IFlightStatus, offset: number): Promise<IFlightWithDetails[]> {
+    const client: PoolClient = await this.pool.connect();
+    try {
+      const query = fetchFlightBy('status', offset);
+      const result = await client.query(query, [status, offset]);
+      const flights = result.rows;
+      return flights.map((flight) => returnFlight(flight, flight.class_window_price));
+    } finally {
+      await client.release();
+    }
+  }
+
+  async getFlightsByDate(date: Date, offset: number): Promise<IFlightWithDetails[]> {
+    const client: PoolClient = await this.pool.connect();
+    try {
+      const query = fetchFlightBy('departure_time::date', offset);
+      const result = await client.query(query, [date.toISOString().split('T')[0], offset]);
+      const flights = result.rows;
+      return flights.map((flight) => returnFlight(flight, flight.class_window_price));
     } finally {
       await client.release();
     }

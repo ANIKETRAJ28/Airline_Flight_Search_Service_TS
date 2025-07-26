@@ -1,4 +1,4 @@
-import { ICityRequest, ICityWithCountry } from '../interface/cities.interface';
+import { ICity, ICityRequest, ICityWithCountry } from '../interface/cities.interface';
 import { CityRepository } from '../repository/city.repository';
 
 export class CityService {
@@ -8,16 +8,28 @@ export class CityService {
     this.cityRepository = new CityRepository();
   }
 
-  async getAllCities(): Promise<ICityWithCountry[]> {
-    return await this.cityRepository.getAllCities();
+  async getCities(): Promise<ICity[]> {
+    return await this.cityRepository.getCities();
+  }
+
+  async getAllCities(offset: number): Promise<ICityWithCountry[]> {
+    return await this.cityRepository.getAllCities(offset);
   }
 
   async getCityById(id: string): Promise<ICityWithCountry> {
     return await this.cityRepository.getCityById(id);
   }
 
-  async searchCities(name: string): Promise<ICityWithCountry[]> {
-    return await this.cityRepository.searchCities(name);
+  async getCitiesByName(name: string): Promise<ICityWithCountry[]> {
+    return await this.cityRepository.getCitiesByName(name);
+  }
+
+  async getCitiesForCountry(countryId: string, offset: number): Promise<ICityWithCountry[]> {
+    return await this.cityRepository.getCitiesForCountry(countryId, offset);
+  }
+
+  async searchCities(keyword: string, offset: number): Promise<ICityWithCountry[]> {
+    return await this.cityRepository.searchCities(keyword, offset);
   }
 
   async createCity(city: ICityRequest): Promise<ICityWithCountry> {
