@@ -36,12 +36,8 @@ export class CountryService {
     return await this.countryRepository.createCountry(country);
   }
 
-  async updateCountryName(id: string, name: string): Promise<ICountry> {
-    return await this.countryRepository.updateCountryName(id, name);
-  }
-
-  async updateCountryCode(id: string, code: string): Promise<ICountry> {
-    return await this.countryRepository.updateCountryCode(id, code);
+  async updateCountry(id: string, data: ICountry): Promise<ICountry> {
+    return await this.countryRepository.updateCountry(id, data);
   }
 
   async deleteCountry(id: string): Promise<void> {

@@ -1,7 +1,6 @@
 import { Pool, PoolClient } from 'pg';
 import {
-  IClassWindowPrice,
-  IClassWindowPriceForUser,
+  IClassWindowPriceWithRemainingSeats,
   IFlight,
   IFlightQueue,
   IFlightRequest,
@@ -13,13 +12,7 @@ import { IFlightStatus, IFlightWindow } from '../types/flight.types';
 import { AirplaneRepository } from './airplane.repository';
 import { CityRepository } from './city.repository';
 import { ICityWithCountry } from '../interface/cities.interface';
-import {
-  classPriceSeat,
-  fetchFlightBy,
-  fetchFlights,
-  returnFlight,
-  returnFlightForUser,
-} from '../util/flightQuery.util';
+import { fetchFlightBy, fetchFlights, returnFlight, returnFlightForUser } from '../util/flightQuery.util';
 import { ApiError } from '../util/api.util';
 
 export class FlightRepository {
@@ -36,16 +29,51 @@ export class FlightRepository {
     const client: PoolClient = await this.pool.connect();
     try {
       const airplane = await this.airplaneRepository.getAirplaneById(data.airplane_id);
-      const total_seats =
-        data.class_window_price.economy.total_seats +
-        data.class_window_price.premium.total_seats +
-        data.class_window_price.business.total_seats;
-      if (airplane.capacity !== total_seats) {
+      const flightBusinessClassSeats =
+        data.class_window_price.business.first_window_seats + data.class_window_price.business.second_window_seats;
+      const flightPremiumClassSeats =
+        data.class_window_price.premium.first_window_seats + data.class_window_price.premium.second_window_seats;
+      const flightEconomyClassSeats =
+        data.class_window_price.economy.first_window_seats +
+        data.class_window_price.economy.second_window_seats +
+        data.class_window_price.economy.third_window_seats;
+      if (airplane.business_class_seats !== flightBusinessClassSeats) {
         throw new ApiError(
           400,
-          `Airplane capacity ${airplane.capacity} does not match total seats ${total_seats} from class window price`,
+          `Airplane business class seats (${airplane.business_class_seats}) do not match flight business class seats (${flightBusinessClassSeats})`,
         );
       }
+      if (airplane.premium_class_seats !== flightPremiumClassSeats) {
+        throw new ApiError(
+          400,
+          `Airplane premium class seats (${airplane.premium_class_seats}) do not match flight premium class seats (${flightPremiumClassSeats})`,
+        );
+      }
+      if (airplane.economy_class_seats !== flightEconomyClassSeats) {
+        throw new ApiError(
+          400,
+          `Airplane economy class seats (${airplane.economy_class_seats}) do not match flight economy class seats (${flightEconomyClassSeats})`,
+        );
+      }
+
+      const class_window_price: IClassWindowPriceWithRemainingSeats = {
+        economy: {
+          ...data.class_window_price.economy,
+          first_window_remaining_seats: data.class_window_price.economy.first_window_seats,
+          second_window_remaining_seats: data.class_window_price.economy.second_window_seats,
+          third_window_remaining_seats: data.class_window_price.economy.third_window_seats,
+        },
+        premium: {
+          ...data.class_window_price.premium,
+          first_window_remaining_seats: data.class_window_price.premium.first_window_seats,
+          second_window_remaining_seats: data.class_window_price.premium.second_window_seats,
+        },
+        business: {
+          ...data.class_window_price.business,
+          first_window_remaining_seats: data.class_window_price.business.first_window_seats,
+          second_window_remaining_seats: data.class_window_price.business.second_window_seats,
+        },
+      };
       let query = `INSERT INTO flights 
                     (airplane_id, departure_airport_id, arrival_airport_id, departure_time, arrival_time, status, price, class_window_price) 
                     VALUES ($1, $2, $3, $4, $5, $6, $7, $8) 
@@ -58,7 +86,7 @@ export class FlightRepository {
         data.arrival_time,
         data.status,
         data.price,
-        JSON.stringify(data.class_window_price),
+        JSON.stringify(class_window_price),
       ]);
       const flight_id = flightPayload.rows[0].id;
       query = fetchFlightBy('id');
@@ -67,7 +95,7 @@ export class FlightRepository {
       if (flight === undefined) {
         throw new ApiError(404, `Flight with id ${flight_id} not found`);
       }
-      return returnFlight(flight, data.class_window_price);
+      return returnFlight(flight);
     } finally {
       await client.release();
     }
@@ -78,7 +106,7 @@ export class FlightRepository {
     try {
       const result = await client.query(fetchFlights, [offset]);
       const flights = result.rows;
-      return flights.map((flight) => returnFlight(flight, flight.class_window_price));
+      return flights.map((flight) => returnFlight(flight));
     } finally {
       await client.release();
     }
@@ -93,7 +121,7 @@ export class FlightRepository {
       if (flight === undefined) {
         throw new ApiError(404, `Flight with id ${id} not found`);
       }
-      return returnFlight(flight, flight.class_window_price);
+      return returnFlight(flight);
     } finally {
       await client.release();
     }
@@ -105,13 +133,11 @@ export class FlightRepository {
       const query = fetchFlightBy('id');
       const result = await client.query(query, [id]);
       const flight = result.rows[0];
+      console.log('flight...', flight);
       if (flight === undefined) {
         throw new ApiError(404, `Flight with id ${id} not found`);
       }
-      const class_window_price: IClassWindowPrice = flight.class_window_price;
-      const class_price_seats: IClassWindowPriceForUser = classPriceSeat(flight, class_window_price);
-      const flightWithDetails: IFlightWithDetails = returnFlight(flight, class_window_price);
-      return returnFlightForUser(flightWithDetails, class_price_seats);
+      return returnFlightForUser(flight);
     } finally {
       await client.release();
     }
@@ -242,9 +268,7 @@ export class FlightRepository {
         const flights: IFlightWithDetailsForUser[] = await Promise.all(
           flightPath.map(async (flightData) => {
             const flight: IFlightWithDetails = await this.getFlightByIdForAdmin(flightData.id);
-            const class_window_price: IClassWindowPrice = flight.class_window_price;
-            const class_price_seats: IClassWindowPriceForUser = classPriceSeat(flight, class_window_price);
-            return returnFlightForUser(flight, class_price_seats);
+            return returnFlightForUser(flight);
           }),
         );
         flightPathFlightsDetailForUser.push(flights);
@@ -264,7 +288,7 @@ export class FlightRepository {
       if (flight === undefined) {
         throw new ApiError(404, `Flight with number ${flight_number} not found`);
       }
-      return returnFlight(flight, flight.class_window_price);
+      return returnFlight(flight);
     } finally {
       await client.release();
     }
@@ -276,7 +300,7 @@ export class FlightRepository {
       const query = fetchFlightBy('departure_airport_id', offset);
       const result = await client.query(query, [departure_airport_id, offset]);
       const flights = result.rows;
-      return flights.map((flight) => returnFlight(flight, flight.class_window_price));
+      return flights.map((flight) => returnFlight(flight));
     } finally {
       await client.release();
     }
@@ -288,7 +312,7 @@ export class FlightRepository {
       const query = fetchFlightBy('arrival_airport_id', offset);
       const result = await client.query(query, [arrival_airport_id, offset]);
       const flights = result.rows;
-      return flights.map((flight) => returnFlight(flight, flight.class_window_price));
+      return flights.map((flight) => returnFlight(flight));
     } finally {
       await client.release();
     }
@@ -300,7 +324,7 @@ export class FlightRepository {
       const query = fetchFlightBy('status', offset);
       const result = await client.query(query, [status, offset]);
       const flights = result.rows;
-      return flights.map((flight) => returnFlight(flight, flight.class_window_price));
+      return flights.map((flight) => returnFlight(flight));
     } finally {
       await client.release();
     }
@@ -312,7 +336,7 @@ export class FlightRepository {
       const query = fetchFlightBy('departure_time::date', offset);
       const result = await client.query(query, [date.toISOString().split('T')[0], offset]);
       const flights = result.rows;
-      return flights.map((flight) => returnFlight(flight, flight.class_window_price));
+      return flights.map((flight) => returnFlight(flight));
     } finally {
       await client.release();
     }
@@ -341,7 +365,7 @@ export class FlightRepository {
       if (flight === undefined) {
         throw new ApiError(404, `Flight with id ${id} not found`);
       }
-      return returnFlight(flight, flight.class_window_price);
+      return returnFlight(flight);
     } finally {
       await client.release();
     }
@@ -373,7 +397,7 @@ export class FlightRepository {
       if (flight === undefined) {
         throw new ApiError(404, `Flight with id ${id} not found`);
       }
-      return returnFlight(flight, flight.class_window_price);
+      return returnFlight(flight);
     } finally {
       await client.release();
     }
@@ -391,7 +415,7 @@ export class FlightRepository {
       query = `UPDATE flights SET status = $1 WHERE id = $2 RETURNING *`;
       result = await client.query(query, [status, id]);
       flight = result.rows[0];
-      return returnFlight(flight, flight.class_window_price);
+      return returnFlight(flight);
     } finally {
       await client.release();
     }
@@ -409,7 +433,7 @@ export class FlightRepository {
       query = `UPDATE flights SET price = $1 WHERE id = $2 RETURNING *`;
       result = await client.query(query, [price, id]);
       flight = result.rows[0];
-      return returnFlight(flight, flight.class_window_price);
+      return returnFlight(flight);
     } finally {
       await client.release();
     }
@@ -427,7 +451,7 @@ export class FlightRepository {
       query = `UPDATE flights SET departure_airport_id = $1 WHERE id = $2 RETURNING *`;
       result = await client.query(query, [departure_airport_id, id]);
       flight = result.rows[0];
-      return returnFlight(flight, flight.class_window_price);
+      return returnFlight(flight);
     } finally {
       await client.release();
     }
@@ -445,7 +469,7 @@ export class FlightRepository {
       query = `UPDATE flights SET arrival_airport_id = $1 WHERE id = $2 RETURNING *`;
       result = await client.query(query, [arrival_airport_id, id]);
       flight = result.rows[0];
-      return returnFlight(flight, flight.class_window_price);
+      return returnFlight(flight);
     } finally {
       await client.release();
     }
@@ -463,7 +487,7 @@ export class FlightRepository {
       query = `UPDATE flights SET airplane_id = $1 WHERE id = $2 RETURNING *`;
       result = await client.query(query, [airplane_id, id]);
       flight = result.rows[0];
-      return returnFlight(flight, flight.class_window_price);
+      return returnFlight(flight);
     } finally {
       await client.release();
     }
@@ -474,24 +498,24 @@ export class FlightRepository {
     try {
       let query = `SELECT * FROM flights WHERE id = $1`;
       const result = await client.query(query, [flight_id]);
-      const flight: IFlight = result.rows[0];
+      const flight = result.rows[0];
       if (flight === undefined) {
         throw new ApiError(404, `Flight with id ${flight_id} not found`);
       }
-      const flightWindow: IClassWindowPrice = flight.class_window_price;
+      const flightWindow: IClassWindowPriceWithRemainingSeats = flight.class_window_price;
       if (window_type === 'economy') {
-        if (flightWindow[window_type].first_window_seats >= seats)
-          flightWindow[window_type].first_window_seats -= seats;
-        else if (flightWindow[window_type].second_window_seats >= seats)
-          flightWindow[window_type].second_window_seats -= seats;
-        else if (flightWindow[window_type].third_window_seats >= seats)
-          flightWindow[window_type].third_window_seats -= seats;
+        if (flightWindow[window_type].first_window_remaining_seats >= seats)
+          flightWindow[window_type].first_window_remaining_seats -= seats;
+        else if (flightWindow[window_type].second_window_remaining_seats >= seats)
+          flightWindow[window_type].second_window_remaining_seats -= seats;
+        else if (flightWindow[window_type].third_window_remaining_seats >= seats)
+          flightWindow[window_type].third_window_remaining_seats -= seats;
         else throw new ApiError(400, `Not enough seats available for ${window_type} window type`);
       } else {
-        if (flightWindow[window_type].first_window_seats >= seats)
-          flightWindow[window_type].first_window_seats -= seats;
-        else if (flightWindow[window_type].second_window_seats >= seats)
-          flightWindow[window_type].second_window_seats -= seats;
+        if (flightWindow[window_type].first_window_remaining_seats >= seats)
+          flightWindow[window_type].first_window_remaining_seats -= seats;
+        else if (flightWindow[window_type].second_window_remaining_seats >= seats)
+          flightWindow[window_type].second_window_remaining_seats -= seats;
         else throw new ApiError(400, `Not enough seats available for ${window_type} window type`);
       }
       query = `UPDATE flights SET class_window_price = $1 WHERE id = $2`;

@@ -1,7 +1,9 @@
 export interface IAirplaneRequest {
   name: string;
   code: string;
-  capacity: number;
+  economy_class_seats: number;
+  premium_class_seats: number;
+  business_class_seats: number;
 }
 
 export interface IAirplane extends IAirplaneRequest {

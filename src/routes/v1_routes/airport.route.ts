@@ -15,6 +15,5 @@ airportRouter.get('/id/:id', jwtMiddleware, checkAdminRole, airportController.ge
 airportRouter.get('/code/:code', jwtMiddleware, checkAdminRole, airportController.getAirportByCode);
 airportRouter.get('/city/name/:name', jwtMiddleware, checkAdminRole, airportController.getAllAirportsOfCityByCityName);
 airportRouter.post('/', jwtMiddleware, checkSuperAdminRole, airportController.createAirport);
-airportRouter.put('/name/:id', jwtMiddleware, checkSuperAdminRole, airportController.updateAirportName);
-airportRouter.put('/code/:id', jwtMiddleware, checkSuperAdminRole, airportController.updateAirportCode);
+airportRouter.put('/:id', jwtMiddleware, checkSuperAdminRole, airportController.updateAirport);
 airportRouter.delete('/:id', jwtMiddleware, checkSuperAdminRole, airportController.deleteAirport);

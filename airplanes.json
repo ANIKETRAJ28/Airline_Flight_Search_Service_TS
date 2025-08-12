@@ -1,0 +1,247 @@
+[
+  {
+    "name": "Boeing 737-800",
+    "code": "B738",
+    "economy_class_seats": 132,
+    "premium_class_seats": 36,
+    "business_class_seats": 18
+  },
+  {
+    "name": "Airbus A320",
+    "code": "A320",
+    "economy_class_seats": 126,
+    "premium_class_seats": 36,
+    "business_class_seats": 18
+  },
+  {
+    "name": "Boeing 777-300ER",
+    "code": "B77W",
+    "economy_class_seats": 276,
+    "premium_class_seats": 78,
+    "business_class_seats": 42
+  },
+  {
+    "name": "Airbus A350-900",
+    "code": "A359",
+    "economy_class_seats": 228,
+    "premium_class_seats": 66,
+    "business_class_seats": 30
+  },
+  {
+    "name": "Embraer E190",
+    "code": "E190",
+    "economy_class_seats": 66,
+    "premium_class_seats": 24,
+    "business_class_seats": 12
+  },
+  {
+    "name": "Boeing 787-8",
+    "code": "B788",
+    "economy_class_seats": 168,
+    "premium_class_seats": 48,
+    "business_class_seats": 24
+  },
+  {
+    "name": "Airbus A330-200",
+    "code": "A332",
+    "economy_class_seats": 186,
+    "premium_class_seats": 54,
+    "business_class_seats": 24
+  },
+  {
+    "name": "McDonnell Douglas MD-83",
+    "code": "MD83",
+    "economy_class_seats": 102,
+    "premium_class_seats": 36,
+    "business_class_seats": 18
+  },
+  {
+    "name": "Boeing 747-400",
+    "code": "B744",
+    "economy_class_seats": 288,
+    "premium_class_seats": 84,
+    "business_class_seats": 42
+  },
+  {
+    "name": "Airbus A310",
+    "code": "A310",
+    "economy_class_seats": 192,
+    "premium_class_seats": 60,
+    "business_class_seats": 24
+  },
+  {
+    "name": "Boeing 767-300",
+    "code": "B763",
+    "economy_class_seats": 186,
+    "premium_class_seats": 54,
+    "business_class_seats": 24
+  },
+  {
+    "name": "Airbus A220-300",
+    "code": "A223",
+    "economy_class_seats": 96,
+    "premium_class_seats": 36,
+    "business_class_seats": 18
+  },
+  {
+    "name": "Tupolev Tu-154",
+    "code": "T154",
+    "economy_class_seats": 126,
+    "premium_class_seats": 36,
+    "business_class_seats": 18
+  },
+  {
+    "name": "Fokker 100",
+    "code": "F100",
+    "economy_class_seats": 72,
+    "premium_class_seats": 24,
+    "business_class_seats": 12
+  },
+  {
+    "name": "Boeing 727-200",
+    "code": "B722",
+    "economy_class_seats": 132,
+    "premium_class_seats": 36,
+    "business_class_seats": 18
+  },
+  {
+    "name": "Ilyushin Il-96",
+    "code": "IL96",
+    "economy_class_seats": 174,
+    "premium_class_seats": 60,
+    "business_class_seats": 24
+  },
+  {
+    "name": "Lockheed L-1011 TriStar",
+    "code": "L101",
+    "economy_class_seats": 168,
+    "premium_class_seats": 60,
+    "business_class_seats": 24
+  },
+  {
+    "name": "Boeing 737 MAX 8",
+    "code": "B38M",
+    "economy_class_seats": 144,
+    "premium_class_seats": 48,
+    "business_class_seats": 18
+  },
+  {
+    "name": "Airbus A321neo",
+    "code": "A21N",
+    "economy_class_seats": 168,
+    "premium_class_seats": 54,
+    "business_class_seats": 24
+  },
+  {
+    "name": "Boeing 757-200",
+    "code": "B752",
+    "economy_class_seats": 162,
+    "premium_class_seats": 54,
+    "business_class_seats": 24
+  },
+  {
+    "name": "Airbus A340-600",
+    "code": "A346",
+    "economy_class_seats": 258,
+    "premium_class_seats": 84,
+    "business_class_seats": 36
+  },
+  {
+    "name": "Boeing 747-8",
+    "code": "B748",
+    "economy_class_seats": 324,
+    "premium_class_seats": 96,
+    "business_class_seats": 48
+  },
+  {
+    "name": "McDonnell Douglas DC-10",
+    "code": "DC10",
+    "economy_class_seats": 180,
+    "premium_class_seats": 60,
+    "business_class_seats": 30
+  },
+  {
+    "name": "McDonnell Douglas MD-11",
+    "code": "MD11",
+    "economy_class_seats": 198,
+    "premium_class_seats": 60,
+    "business_class_seats": 36
+  },
+  {
+    "name": "Airbus A300",
+    "code": "A300",
+    "economy_class_seats": 174,
+    "premium_class_seats": 60,
+    "business_class_seats": 30
+  },
+  {
+    "name": "Comac C919",
+    "code": "C919",
+    "economy_class_seats": 96,
+    "premium_class_seats": 36,
+    "business_class_seats": 12
+  },
+  {
+    "name": "Sukhoi Superjet 100",
+    "code": "SSJ1",
+    "economy_class_seats": 72,
+    "premium_class_seats": 24,
+    "business_class_seats": 12
+  },
+  {
+    "name": "Bombardier CRJ900",
+    "code": "CRJ9",
+    "economy_class_seats": 60,
+    "premium_class_seats": 18,
+    "business_class_seats": 12
+  },
+  {
+    "name": "Mitsubishi SpaceJet M90",
+    "code": "M90J",
+    "economy_class_seats": 72,
+    "premium_class_seats": 24,
+    "business_class_seats": 6
+  },
+  {
+    "name": "Antonov An-148",
+    "code": "A148",
+    "economy_class_seats": 60,
+    "premium_class_seats": 18,
+    "business_class_seats": 6
+  },
+  {
+    "name": "Embraer E175",
+    "code": "E175",
+    "economy_class_seats": 72,
+    "premium_class_seats": 24,
+    "business_class_seats": 6
+  },
+  {
+    "name": "Airbus A318",
+    "code": "A318",
+    "economy_class_seats": 72,
+    "premium_class_seats": 24,
+    "business_class_seats": 6
+  },
+  {
+    "name": "Boeing 737-900ER",
+    "code": "B739",
+    "economy_class_seats": 138,
+    "premium_class_seats": 42,
+    "business_class_seats": 18
+  },
+  {
+    "name": "Bombardier CS100",
+    "code": "CS1K",
+    "economy_class_seats": 90,
+    "premium_class_seats": 24,
+    "business_class_seats": 12
+  },
+  {
+    "name": "Tupolev Tu-204",
+    "code": "T204",
+    "economy_class_seats": 120,
+    "premium_class_seats": 36,
+    "business_class_seats": 12
+  }
+]

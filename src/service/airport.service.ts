@@ -44,12 +44,8 @@ export class AirportService {
     return await this.airportRepository.getAirportsForCountry(countryId, offset);
   }
 
-  async updateAirportName(id: string, name: string): Promise<IAirportWithCityAndCountry> {
-    return await this.airportRepository.updateAirportName(id, name);
-  }
-
-  async updateAirportCode(id: string, code: string): Promise<IAirportWithCityAndCountry> {
-    return await this.airportRepository.updateAirportCode(id, code);
+  async updateAirport(id: string, name: string, code: string): Promise<IAirportWithCityAndCountry> {
+    return await this.airportRepository.updateAirport(id, name, code);
   }
 
   async deleteAirport(id: string): Promise<void> {

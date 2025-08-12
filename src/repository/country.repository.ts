@@ -92,8 +92,13 @@ export class CountryRepository {
   async createCountry(country: ICountryRequest): Promise<ICountry> {
     const client: PoolClient = await this.pool.connect();
     try {
-      const query = 'INSERT INTO countries (name, code) VALUES ($1, $2) RETURNING *';
-      const result = await client.query(query, [country.name, country.code]);
+      let query = 'SELECT * FROM countries WHERE name = $1 OR code = $2';
+      let result = await client.query(query, [country.name, country.code]);
+      if (result.rows.length > 0) {
+        throw new ApiError(400, `Country with name ${country.name} or code ${country.code} already exists`);
+      }
+      query = 'INSERT INTO countries (name, code) VALUES ($1, $2) RETURNING *';
+      result = await client.query(query, [country.name, country.code]);
       const newCountry: ICountry = result.rows[0];
       return newCountry;
     } finally {
@@ -101,26 +106,11 @@ export class CountryRepository {
     }
   }
 
-  async updateCountryName(id: string, name: string): Promise<ICountry> {
+  async updateCountry(id: string, data: ICountry): Promise<ICountry> {
     const client: PoolClient = await this.pool.connect();
     try {
-      const query = 'UPDATE countries SET name = $1 WHERE id = $2 RETURNING *';
-      const result = await client.query(query, [name, id]);
-      const updatedCountry: ICountry | undefined = result.rows[0];
-      if (updatedCountry === undefined) {
-        throw new ApiError(404, `Country with id ${id} not found`);
-      }
-      return updatedCountry;
-    } finally {
-      await client.release();
-    }
-  }
-
-  async updateCountryCode(id: string, code: string): Promise<ICountry> {
-    const client: PoolClient = await this.pool.connect();
-    try {
-      const query = 'UPDATE countries SET code = $1 WHERE id = $2 RETURNING *';
-      const result = await client.query(query, [code, id]);
+      const query = 'UPDATE countries SET name = $1, code = $2 WHERE id = $3 RETURNING *';
+      const result = await client.query(query, [data.name, data.code, id]);
       const updatedCountry: ICountry | undefined = result.rows[0];
       if (updatedCountry === undefined) {
         throw new ApiError(404, `Country with id ${id} not found`);

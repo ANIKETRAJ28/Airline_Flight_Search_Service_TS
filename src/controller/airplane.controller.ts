@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
-
 import { AirplaneService } from '../service/airplane.service';
 import { apiHandler, errorHandler } from '../util/apiHandler.util';
 import { ApiError } from '../util/api.util';
+import { IAirplaneRequest } from '../interface/airplanes.interface';
 
 export class AirplaneController {
   private airplaneService: AirplaneService;
@@ -85,11 +85,17 @@ export class AirplaneController {
 
   createAirplane = async (req: Request, res: Response): Promise<void> => {
     try {
-      const { name, code, capacity }: { name: string; code: string; capacity: number } = req.body;
-      if (!name || !code || !capacity) {
-        throw new ApiError(400, 'Airplane name, code, and capacity are required');
+      const { name, code, business_class_seats, economy_class_seats, premium_class_seats }: IAirplaneRequest = req.body;
+      if (!name || !code || !business_class_seats || !economy_class_seats || !premium_class_seats) {
+        throw new ApiError(400, 'Airplane name, code, and seat counts are required');
       }
-      const newAirplane = await this.airplaneService.createAirplane({ name, code, capacity });
+      const newAirplane = await this.airplaneService.createAirplane({
+        business_class_seats,
+        code,
+        economy_class_seats,
+        name,
+        premium_class_seats,
+      });
       apiHandler(res, 201, 'Airplane created successfully', newAirplane);
     } catch (error) {
       errorHandler(error, res);

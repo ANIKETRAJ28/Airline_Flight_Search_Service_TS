@@ -13,6 +13,5 @@ countryRouter.get('/:id', jwtMiddleware, checkAdminRole, countryController.getCo
 countryRouter.get('/name/:name', countryController.getCountryByName);
 countryRouter.get('/code/:code', countryController.getCountryByCode);
 countryRouter.post('/', jwtMiddleware, checkSuperAdminRole, countryController.createCountry);
-countryRouter.put('/name/:id', jwtMiddleware, checkSuperAdminRole, countryController.updateCountryName);
-countryRouter.put('/code/:id', jwtMiddleware, checkAdminRole, countryController.updateCountryCode);
+countryRouter.put('/:id', jwtMiddleware, checkSuperAdminRole, countryController.updateCountry);
 countryRouter.delete('/:id', jwtMiddleware, checkAdminRole, countryController.deleteCountry);

@@ -1,4 +1,8 @@
-import { IFlightAutomation, IFlightAutomationRequest } from '../interface/flight_automation.interface';
+import {
+  IFlightAutomation,
+  IFlightAutomationRequest,
+  IFlightAutomationResponse,
+} from '../interface/flight_automation.interface';
 import { FlightAutomationRepository } from '../repository/flight_automation.repository';
 
 export class FlightAutomationService {
@@ -12,15 +16,34 @@ export class FlightAutomationService {
     return this.flightAutomationRepository.createFlightAutomation(flightAutomation);
   }
 
-  async getAllFlightAutomations(): Promise<IFlightAutomation[]> {
-    return this.flightAutomationRepository.getActiveFlightAutomations();
+  async getAllFlightAutomations(offset: number): Promise<IFlightAutomationResponse[]> {
+    return this.flightAutomationRepository.getAllFlightAutomations(offset);
   }
 
   async getActiveFlightAutomations(): Promise<IFlightAutomation[]> {
     return this.flightAutomationRepository.getActiveFlightAutomations();
   }
 
+  async getFlightAutomationById(id: string): Promise<IFlightAutomation> {
+    return this.flightAutomationRepository.getFlightAutomationById(id);
+  }
+
+  async getFlightAutomationsByDate(date: Date, offset: number): Promise<IFlightAutomationResponse[]> {
+    return this.flightAutomationRepository.getFlightAutomationsByDate(date, offset);
+  }
+
+  async getFlightAutomationsByCancelledStatus(
+    isCancelled: boolean,
+    offset: number,
+  ): Promise<IFlightAutomationResponse[]> {
+    return this.flightAutomationRepository.getFlightAutomationsByCancelledStatus(isCancelled, offset);
+  }
+
   async createFlightsFromAutomation(): Promise<void> {
     return this.flightAutomationRepository.createFlightsFromAutomation();
+  }
+
+  async updateFlightAutomationById(id: string): Promise<IFlightAutomationResponse> {
+    return this.flightAutomationRepository.updateFlightAutomationById(id);
   }
 }

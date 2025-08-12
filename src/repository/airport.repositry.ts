@@ -161,27 +161,11 @@ export class AirportRepository {
     }
   }
 
-  async updateAirportName(id: string, name: string): Promise<IAirportWithCityAndCountry> {
+  async updateAirport(id: string, name: string, code: string): Promise<IAirportWithCityAndCountry> {
     const client: PoolClient = await this.pool.connect();
     try {
-      const query = `UPDATE airports SET name = $1 WHERE id = $2`;
-      await client.query(query, [name, id]);
-      const result = await client.query(fetchAirportById, [id]);
-      const airport = result.rows[0];
-      if (airport === undefined) {
-        throw new ApiError(404, `Airport with id ${id} not found`);
-      }
-      return returnAirport(airport);
-    } finally {
-      await client.release();
-    }
-  }
-
-  async updateAirportCode(id: string, code: string): Promise<IAirportWithCityAndCountry> {
-    const client: PoolClient = await this.pool.connect();
-    try {
-      const query = `UPDATE airports SET code = $1 WHERE id = $2`;
-      await client.query(query, [code, id]);
+      const query = `UPDATE airports SET name = $1, code = $2 WHERE id = $3`;
+      await client.query(query, [name, code, id]);
       const result = await client.query(fetchAirportById, [id]);
       const airport = result.rows[0];
       if (airport === undefined) {

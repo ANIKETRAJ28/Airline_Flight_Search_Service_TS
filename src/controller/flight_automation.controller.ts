@@ -1,9 +1,6 @@
 import { Request, Response } from 'express';
 import { FlightAutomationService } from '../service/flight_automation.service';
-import {
-  IFlightAutomationRequest,
-  IFlightAutomationRequestWithoutTotalSeats,
-} from '../interface/flight_automation.interface';
+import { IFlightAutomationRequest } from '../interface/flight_automation.interface';
 import { ApiError } from '../util/api.util';
 import { apiHandler, errorHandler } from '../util/apiHandler.util';
 
@@ -16,9 +13,9 @@ export class FlightAutomationController {
 
   createFlightAutomation = async (req: Request, res: Response): Promise<void> => {
     try {
-      const flightAutomationReq: IFlightAutomationRequestWithoutTotalSeats = req.body;
-      if (flightAutomationReq.flight_rotation.length < 3) {
-        throw new ApiError(400, 'Flight rotation must have at least 3 legs');
+      const flightAutomationReq: IFlightAutomationRequest = req.body;
+      if (flightAutomationReq.flight_rotation.length < 2) {
+        throw new ApiError(400, 'Flight rotation must have at least 2 legs');
       }
       if (
         flightAutomationReq.flight_rotation[0].departure_airport_id !==
@@ -97,9 +94,10 @@ export class FlightAutomationController {
     }
   };
 
-  getAllFlightAutomations = async (_req: Request, res: Response): Promise<void> => {
+  getAllFlightAutomations = async (req: Request, res: Response): Promise<void> => {
     try {
-      const flightAutomations = await this.flightAutomationService.getAllFlightAutomations();
+      const offset = parseInt(req.query.offset as string) || 0;
+      const flightAutomations = await this.flightAutomationService.getAllFlightAutomations(offset);
       apiHandler(res, 200, 'All flight automations fetched successfully', flightAutomations);
     } catch (error) {
       errorHandler(error, res);
@@ -115,10 +113,58 @@ export class FlightAutomationController {
     }
   };
 
+  getFlightAutomationById = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const id = req.params.id;
+      const flightAutomation = await this.flightAutomationService.getFlightAutomationById(id);
+      if (!flightAutomation) {
+        throw new ApiError(404, 'Flight automation not found');
+      }
+      apiHandler(res, 200, 'Flight automation fetched successfully', flightAutomation);
+    } catch (error) {
+      errorHandler(error, res);
+    }
+  };
+
+  getFlightAutomationsByDate = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const date = new Date(req.query.date as string);
+      const offset = parseInt(req.query.offset as string) || 0;
+      const flightAutomations = await this.flightAutomationService.getFlightAutomationsByDate(date, offset);
+      apiHandler(res, 200, 'Flight automations by date fetched successfully', flightAutomations);
+    } catch (error) {
+      errorHandler(error, res);
+    }
+  };
+
+  getFlightAutomationsByCancelledStatus = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const isCancelled = req.query.is_cancelled === 'true';
+      const offset = parseInt(req.query.offset as string) || 0;
+      const flightAutomations = await this.flightAutomationService.getFlightAutomationsByCancelledStatus(
+        isCancelled,
+        offset,
+      );
+      apiHandler(res, 200, 'Flight automations by cancelled status fetched successfully', flightAutomations);
+    } catch (error) {
+      errorHandler(error, res);
+    }
+  };
+
   createFlightsFromAutomation = async (_req: Request, res: Response): Promise<void> => {
     try {
       await this.flightAutomationService.createFlightsFromAutomation();
       apiHandler(res, 200, 'Flights created from automation successfully');
+    } catch (error) {
+      errorHandler(error, res);
+    }
+  };
+
+  updateFlightAutomationById = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const id = req.params.id;
+      const response = await this.flightAutomationService.updateFlightAutomationById(id);
+      apiHandler(res, 200, 'Flight automation updated successfully', response);
     } catch (error) {
       errorHandler(error, res);
     }

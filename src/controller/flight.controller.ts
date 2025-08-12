@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
 import { FlightService } from '../service/flight.service';
-import { IFlightRequestWithoutTotalSeats } from '../interface/flights.interface';
 import { IFlightStatus, IFlightWindow } from '../types/flight.types';
 import { ApiError } from '../util/api.util';
 import { apiHandler, errorHandler } from '../util/apiHandler.util';
+import { IFlightRequest } from '../interface/flights.interface';
 
 export class FlightController {
   private flightService: FlightService;
@@ -14,7 +14,7 @@ export class FlightController {
 
   createFlight = async (req: Request, res: Response): Promise<void> => {
     try {
-      const flightPayload: IFlightRequestWithoutTotalSeats = req.body;
+      const flightPayload: IFlightRequest = req.body;
       if (!flightPayload) {
         throw new ApiError(400, 'Flight details are required');
       }
@@ -41,32 +41,7 @@ export class FlightController {
       ) {
         throw new ApiError(400, 'Multiplicative factor of window seats cannot be less than 1');
       }
-      const data = {
-        ...flightPayload,
-        class_window_price: {
-          ...flightPayload.class_window_price,
-          business: {
-            ...flightPayload.class_window_price.business,
-            total_seats:
-              flightPayload.class_window_price.business.first_window_seats +
-              flightPayload.class_window_price.business.second_window_seats,
-          },
-          premium: {
-            ...flightPayload.class_window_price.premium,
-            total_seats:
-              flightPayload.class_window_price.premium.first_window_seats +
-              flightPayload.class_window_price.premium.second_window_seats,
-          },
-          economy: {
-            ...flightPayload.class_window_price.economy,
-            total_seats:
-              flightPayload.class_window_price.economy.first_window_seats +
-              flightPayload.class_window_price.economy.second_window_seats +
-              flightPayload.class_window_price.economy.third_window_seats,
-          },
-        },
-      };
-      const flight = await this.flightService.createFlight(data);
+      const flight = await this.flightService.createFlight(flightPayload);
       apiHandler(res, 201, 'Flight created successfully', flight);
     } catch (error) {
       errorHandler(error, res);

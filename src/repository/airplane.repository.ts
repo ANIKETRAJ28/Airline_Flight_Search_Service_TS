@@ -92,8 +92,15 @@ export class AirplaneRepository {
   async createAirplane(airplane: IAirplaneRequest): Promise<IAirplane> {
     const client: PoolClient = await this.pool.connect();
     try {
-      const query = 'INSERT INTO airplanes (name, code, capacity) VALUES ($1, $2, $3) RETURNING *';
-      const result = await client.query(query, [airplane.name, airplane.code, airplane.capacity]);
+      const query =
+        'INSERT INTO airplanes (name, code, economy_class_seats, premium_class_seats, business_class_seats) VALUES ($1, $2, $3, $4, $5) RETURNING *';
+      const result = await client.query(query, [
+        airplane.name,
+        airplane.code,
+        airplane.economy_class_seats,
+        airplane.premium_class_seats,
+        airplane.business_class_seats,
+      ]);
       const newAirplane: IAirplane = result.rows[0];
       return newAirplane;
     } finally {

@@ -9,7 +9,7 @@
     "initialize:db": "node dist/config/db.config.js",
     "start": "npm run build && node dist/index.js",
     "migrate": "node-pg-migrate",
-    "seed": "node seeds/seeds.ts",
+    "seed": "node dist/seeds/seeds.js",
     "format": "npx prettier --write .",
     "lint": "eslint .",
     "prepare": "husky install"

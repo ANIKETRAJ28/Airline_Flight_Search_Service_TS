@@ -129,29 +129,15 @@ export class AirportController {
     }
   };
 
-  updateAirportName = async (req: Request, res: Response): Promise<void> => {
+  updateAirport = async (req: Request, res: Response): Promise<void> => {
     try {
       const { id } = req.params;
-      const { name } = req.body;
-      if (!id || !name) {
+      const { name, code } = req.body;
+      if (!id) {
         throw new ApiError(400, 'Airport ID and name are required');
       }
-      const updatedAirport = await this.airportService.updateAirportName(id, name);
+      const updatedAirport = await this.airportService.updateAirport(id, name, code);
       apiHandler(res, 200, 'Airport name updated successfully', updatedAirport);
-    } catch (error) {
-      errorHandler(error, res);
-    }
-  };
-
-  updateAirportCode = async (req: Request, res: Response): Promise<void> => {
-    try {
-      const { id } = req.params;
-      const { code } = req.body;
-      if (!id || !code) {
-        throw new ApiError(400, 'Airport ID and code are required');
-      }
-      const updatedAirport = await this.airportService.updateAirportCode(id, code);
-      apiHandler(res, 200, 'Airport code updated successfully', updatedAirport);
     } catch (error) {
       errorHandler(error, res);
     }

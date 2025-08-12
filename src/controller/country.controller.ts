@@ -96,36 +96,17 @@ export class CountryController {
     }
   };
 
-  updateCountryName = async (req: Request, res: Response): Promise<void> => {
+  updateCountry = async (req: Request, res: Response): Promise<void> => {
     try {
       const { id } = req.params;
       if (!id) {
         throw new ApiError(400, 'Country ID is required');
       }
-      const { name } = req.body;
-      if (!name) {
-        throw new ApiError(400, 'Country name is required');
-      }
-      const updatedCountry: ICountry = await this.countryService.updateCountryName(id, name);
-      apiHandler(res, 200, 'Country name updated successfully', updatedCountry);
+      const data: ICountry = req.body;
+      const updatedCountry: ICountry = await this.countryService.updateCountry(id, data);
+      apiHandler(res, 200, 'Country updated successfully', updatedCountry);
     } catch (error) {
-      errorHandler(error, res);
-    }
-  };
-
-  updateCountryCode = async (req: Request, res: Response): Promise<void> => {
-    try {
-      const { id } = req.params;
-      if (!id) {
-        throw new ApiError(400, 'Country ID is required');
-      }
-      const { code } = req.body;
-      if (!code) {
-        throw new ApiError(400, 'Country code is required');
-      }
-      const updatedCountry: ICountry = await this.countryService.updateCountryCode(id, code);
-      apiHandler(res, 200, 'Country code updated successfully', updatedCountry);
-    } catch (error) {
+      console.log('error...', error);
       errorHandler(error, res);
     }
   };
